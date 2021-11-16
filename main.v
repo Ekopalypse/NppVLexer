@@ -13,7 +13,6 @@ fn C.GC_INIT()
 __global (
 	npp_data NppData
 	func_items []FuncItem
-	doc_pointer voidptr
 )
 
 const (
@@ -87,7 +86,6 @@ fn be_notified(notification &sci.SCNotification) {
 	match notification.nmhdr.code {
 		notepadpp.nppn_ready {}
 		notepadpp.nppn_bufferactivated {
-			doc_pointer = voidptr(0)
 			current_view := npp.get_current_view()
 			if current_view == 0 {
 				editor.current_func = editor.main_func

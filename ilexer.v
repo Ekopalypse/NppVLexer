@@ -308,7 +308,7 @@ fn lex(self &ILexer, start_pos usize, length_doc isize, init_style int, p_access
 				style := idoc.vtable.style_at(p_access, isize(i))
 				if style != char(LexState.strings) {
 					mut chr := char(0)
-					idoc.vtable.get_char_range(p_access, &chr, i+1, 1)
+					idoc.vtable.get_char_range(p_access, &chr, isize(i+1), 1)
 					lexer.string_starts_with = &byte(&chr) // TODO: cast char to byte - safe??
 					break
 				}
@@ -419,7 +419,7 @@ fn lex(self &ILexer, start_pos usize, length_doc isize, init_style int, p_access
 			word_length := lexer.current_word.len
 			
 			idoc.vtable.start_styling(p_access, isize(start_pos)+i-word_length)
-			idoc.vtable.set_style_for(p_access, word_length, lexer.state)
+			idoc.vtable.set_style_for(p_access, word_length, char(lexer.state))
 			
 			i--
 			lexer.previous_char = lexer.buffer[i]
@@ -430,7 +430,7 @@ fn lex(self &ILexer, start_pos usize, length_doc isize, init_style int, p_access
 		}
 		else {
 			idoc.vtable.start_styling(p_access, isize(start_pos)+i)
-			idoc.vtable.set_style_for(p_access, 1, lexer.state)
+			idoc.vtable.set_style_for(p_access, 1, char(lexer.state))
 			lexer.previous_char = ch
 			if lexer.next_state != LexState.notset {
 				lexer.state = lexer.next_state

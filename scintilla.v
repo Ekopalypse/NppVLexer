@@ -52,7 +52,7 @@ pub mut:
 	character_source int			// SCN_CHARADDED 
 }
 
-pub type SCI_FN_DIRECT = fn(hwnd isize, msg u32, param usize, lparam isize) isize
+pub type SCI_FN_DIRECT = fn(hwnd isize, msg int, param usize, lparam isize) isize
 
 pub struct Editor {
 pub mut:
@@ -90,6 +90,7 @@ pub fn (e Editor) get_char_at(position usize) byte {
 
 pub fn (e Editor) get_lexer_language() string {
 	length := e.call(sci_getlexerlanguage, 0, 0)
+	if length == 0 { return 'SCLEX_CONTAINER' }
 	mut language_ptr := vcalloc(int(length))
 	e.call(sci_getlexerlanguage, 0, isize(language_ptr))
 	return unsafe { language_ptr.vstring() }
