@@ -215,7 +215,7 @@ fn get_lexer_status_text(index u32, desc &char, buf_length int) {
 // scintilla with ILexer5 start
 [windows_stdcall]
 [export: CreateLexer]
-fn create_lexer(index int) &ILexer {
+fn create_lexer(name charptr) &ILexer {
 	return &ilexer
 }
 
