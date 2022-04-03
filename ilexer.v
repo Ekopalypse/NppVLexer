@@ -212,18 +212,45 @@ fn get_lexer_status_text(index u32, desc &char, buf_length int) {
     unsafe{ C.memcpy(desc, src.to_wide(), (src.len+1)*2) }
 }
 
+// scintilla with ILexer5 start
 [windows_stdcall]
-[export: GetLexerFactory]
+[export: CreateLexer]
+fn create_lexer(index int) &ILexer {
+	return &ilexer
+}
+
+[windows_stdcall]
+[export: GetNameSpace]
+fn get_namespace() charptr {
+	return 'vlang.VLang'.str
+}
+
+// void SetLibraryProperty(const char *key, const char *value)
+[windows_stdcall]
+[export: SetLibraryProperty]
+fn set_library_property(key charptr, value charptr) {
+	// ignore for now
+}
+
+[windows_stdcall]
+[export: GetLibraryPropertyNames]
+fn get_library_property_names() charptr {
+	return ''.str
+}
+// scintilla with ILexer5 end
+
+// scintilla with ILexer4 start
+[windows_stdcall]
+[export: CreateLexerFactory]
 fn get_lexer_factory(index int) fn() voidptr {
 	return ilexer_implementation
 }
-
 
 [windows_stdcall]
 fn ilexer_implementation() voidptr {
 	return voidptr(&ilexer)
 }
-
+// scintilla with ILexer4 end
 
 // virtual int SCI_METHOD Version() const = 0
 [windows_stdcall]

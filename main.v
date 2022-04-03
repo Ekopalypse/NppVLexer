@@ -6,6 +6,11 @@ import scintilla as sci
 import vlexer
 import winapi { message_box }
 
+$if msvc {
+	// #flag -lD:\\ProgramData\\Compiler\\gc-8.0.4\\bin\\gc64_dll  // 64bit dll usage
+	#flag -lD:\\ProgramData\\Compiler\\gc-8.0.4\\bin\\gc        // static lib usage
+}
+
 fn C._vinit(int, voidptr)
 fn C._vcleanup()
 fn C.GC_INIT()
