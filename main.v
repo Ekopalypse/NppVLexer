@@ -166,8 +166,8 @@ fn create_lang_xml(path string) bool {
 <NotepadPlus>
     <Languages>
         <Language name="VLang" ext="v" commentLine="//" commentStart="/*" commentEnd="*/">
-            <Keywords name="instre1">assert if else asm return sizeof go goto mut shared lock rlock type for true false continue break typeof pub in atomic or static as defer match select is none print println</Keywords>
-            <Keywords name="instre2">i8 i16 i32 i64 u8 u16 u32 u64 f32 f64 int string ustring char byte bool any isize usize size_t rune</Keywords>
+            <Keywords name="instre1">as asm assert atomic break continue defer else false for go goto if in is isreftype lock match mut none or pub return rlock select shared sizeof static true type typeof volatile print println</Keywords>
+			<Keywords name="instre2">i8 i16 i32 i64 u8 u16 u32 u64 f32 f64 int string any char byte bool isize usize size_t rune</Keywords>
             <Keywords name="type1">void voidptr charptr byteptr</Keywords>
             <Keywords name="type2">__global __offsetof</Keywords>
             <Keywords name="type3">fn array map chan struct enum interface union import module unsafe const</Keywords>
