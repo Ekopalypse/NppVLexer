@@ -134,6 +134,7 @@ mut:
 	string_starts_with   u8
 	current_word         string
 	is_keyword_or_number bool
+	is_raw_string        bool
 }
 
 fn (mut l Lexer) init(pos usize, length isize, buffer_ptr &char, doc_length isize) {
@@ -147,7 +148,7 @@ fn (mut l Lexer) init(pos usize, length isize, buffer_ptr &char, doc_length isiz
 	l.previous_char = ` `
 	l.next_char = ` `
 	l.nested_comment_block = 0
-	l.string_starts_with = ` `
+	// l.string_starts_with = ` `
 	l.current_word = ''
 	l.is_keyword_or_number = false
 }
@@ -312,23 +313,13 @@ fn lex(self &ILexer, start_pos usize, length_doc isize, init_style int, p_access
 	}
 	lexer.init(start_pos, length_doc, buffer_ptr, real_doc_length)
 	match init_style {
-		2 {
-			lexer.state = LexState.comment_block
-		}
-		5 {
-			// go back and find out which char started the current string
-			for i := start_pos - 1; i >= 0; i-- {
-				style := idoc.vtable.style_at(p_access, isize(i))
-				if style != char(LexState.strings) {
-					idoc.vtable.get_char_range(p_access, &lexer.string_starts_with, isize(i + 1),
-						1)
-					break
-				}
-			}
-			lexer.state = LexState.strings
-		}
+		// not needed to check LexState.comment_line as scintilla starts lexing from start of line always
+		2 { lexer.state = LexState.comment_block }
+		5 { lexer.state = LexState.strings }
 		else {
 			lexer.state = LexState.default
+			lexer.is_raw_string = false
+			lexer.string_starts_with = ` `
 		}
 	}
 
@@ -348,35 +339,42 @@ fn lex(self &ILexer, start_pos usize, length_doc isize, init_style int, p_access
 		match lexer.state {
 			.default {
 				if is_word_start(ch) {
-					word_start := i
-					i++
-					for i < length_doc {
-						if !is_word_char(lexer.buffer[i]) {
-							break
-						}
+					if ch == `r` && (lexer.next_char == `"` || lexer.next_char == `'` || lexer.next_char == `\``) {
+						lexer.state = LexState.strings
+						lexer.is_raw_string = true
+						lexer.string_starts_with = lexer.next_char
 						i++
-					}
-					if i < length_doc {
-						lexer.next_char = lexer.buffer[i]
 					} else {
-						lexer.next_char = ` `
-					} // assigning something which isn't significant to the language
-					lexer.current_word = lexer.buffer[word_start..i]
-					lexer.state = match true {
-						lexer.current_word in key_words.kw1 { LexState.kw_list1 }
-						lexer.current_word in key_words.kw2 { LexState.kw_list2 }
-						lexer.current_word in key_words.kw3 { LexState.kw_list3 }
-						lexer.current_word in key_words.kw4 { LexState.kw_list4 }
-						lexer.current_word in key_words.kw5 { LexState.kw_list5 }
-						lexer.current_word in key_words.kw6 { LexState.kw_list6 }
-						lexer.current_word in key_words.kw7 { LexState.kw_list7 }
-						lexer.current_word in key_words.kw8 { LexState.kw_list8 }
-						lexer.current_word.starts_with('C') && lexer.next_char == `.` { LexState.c_functions }
-						lexer.next_char == `(` { LexState.functions }
-						else { LexState.default }
+						word_start := i
+						i++
+						for i < length_doc {
+							if !is_word_char(lexer.buffer[i]) {
+								break
+							}
+							i++
+						}
+						if i < length_doc {
+							lexer.next_char = lexer.buffer[i]
+						} else {
+							lexer.next_char = ` `
+						} // assigning something which isn't significant to the language
+						lexer.current_word = lexer.buffer[word_start..i]
+						lexer.state = match true {
+							lexer.current_word in key_words.kw1 { LexState.kw_list1 }
+							lexer.current_word in key_words.kw2 { LexState.kw_list2 }
+							lexer.current_word in key_words.kw3 { LexState.kw_list3 }
+							lexer.current_word in key_words.kw4 { LexState.kw_list4 }
+							lexer.current_word in key_words.kw5 { LexState.kw_list5 }
+							lexer.current_word in key_words.kw6 { LexState.kw_list6 }
+							lexer.current_word in key_words.kw7 { LexState.kw_list7 }
+							lexer.current_word in key_words.kw8 { LexState.kw_list8 }
+							lexer.current_word.starts_with('C') && lexer.next_char == `.` { LexState.c_functions }
+							lexer.next_char == `(` { LexState.functions }
+							else { LexState.default }
+						}
+						lexer.is_keyword_or_number = true
+						lexer.next_state = LexState.default
 					}
-					lexer.is_keyword_or_number = true
-					lexer.next_state = LexState.default
 				} else if ch == `/` && lexer.next_char == `/` {
 					lexer.state = LexState.comment_line
 				} else if ch == `/` && lexer.next_char == `*` {
@@ -384,6 +382,10 @@ fn lex(self &ILexer, start_pos usize, length_doc isize, init_style int, p_access
 				} else if ch == `"` || ch == `'` || ch == `\`` {
 					lexer.state = LexState.strings
 					lexer.string_starts_with = ch
+				// } else if ch == `r` && (lexer.next_char == `"` || lexer.next_char == `'` || lexer.next_char == `\``) {
+					// lexer.state = LexState.strings
+					// lexer.is_raw_string = true
+					// lexer.string_starts_with = lexer.next_char
 				} else if ch in [`*`, `/`, `%`, `<`, `>`, `&`, `+`, `-`, `|`, `^`, `!`, `=`, `:`,
 					`(`, `)`, `{`, `}`, `[`, `]`] {
 					lexer.state = LexState.operator
@@ -420,11 +422,13 @@ fn lex(self &ILexer, start_pos usize, length_doc isize, init_style int, p_access
 			.number {}
 			.operator {}
 			.strings {
-				// '\'' and '\n' and '\\'
+				// like '\'' and '\\' and r'\'
 				if (ch == lexer.string_starts_with && lexer.previous_char == `\\`
 					&& lexer.before_previous_char == `\\`)
-					|| (ch == lexer.string_starts_with && lexer.previous_char != `\\`) {
+					|| (ch == lexer.string_starts_with && lexer.previous_char != `\\`) 
+					|| (ch == lexer.string_starts_with && lexer.next_char != ch && lexer.is_raw_string) {
 					lexer.next_state = LexState.default
+					lexer.is_raw_string = false
 				}
 			}
 			else {}
