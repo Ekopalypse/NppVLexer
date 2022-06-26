@@ -147,7 +147,7 @@ fn (mut l Lexer) init(pos usize, length isize, buffer_ptr &char, doc_length isiz
 	l.before_previous_char = ` `
 	l.previous_char = ` `
 	l.next_char = ` `
-	l.nested_comment_block = 0
+	// l.nested_comment_block = 0
 	// l.string_starts_with = ` `
 	l.current_word = ''
 	l.is_keyword_or_number = false
@@ -379,13 +379,10 @@ fn lex(self &ILexer, start_pos usize, length_doc isize, init_style int, p_access
 					lexer.state = LexState.comment_line
 				} else if ch == `/` && lexer.next_char == `*` {
 					lexer.state = LexState.comment_block
+					lexer.nested_comment_block++
 				} else if ch == `"` || ch == `'` || ch == `\`` {
 					lexer.state = LexState.strings
 					lexer.string_starts_with = ch
-				// } else if ch == `r` && (lexer.next_char == `"` || lexer.next_char == `'` || lexer.next_char == `\``) {
-					// lexer.state = LexState.strings
-					// lexer.is_raw_string = true
-					// lexer.string_starts_with = lexer.next_char
 				} else if ch in [`*`, `/`, `%`, `<`, `>`, `&`, `+`, `-`, `|`, `^`, `!`, `=`, `:`,
 					`(`, `)`, `{`, `}`, `[`, `]`] {
 					lexer.state = LexState.operator
@@ -413,7 +410,9 @@ fn lex(self &ILexer, start_pos usize, length_doc isize, init_style int, p_access
 			.comment_block {
 				// TODO: nested comment blocks
 				if ch == `/` && lexer.next_char == `*` {
+					lexer.nested_comment_block++
 				} else if ch == `/` && lexer.previous_char == `*` {
+					lexer.nested_comment_block--
 					if lexer.nested_comment_block == 0 {
 						lexer.next_state = LexState.default
 					}
