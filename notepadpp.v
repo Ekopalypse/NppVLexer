@@ -6,7 +6,6 @@ __global (
 	npp Npp
 )
 
-
 pub struct Npp {
 mut:
 	hwnd voidptr
@@ -24,7 +23,7 @@ pub fn (n Npp) get_current_view() isize {
 pub fn (n Npp) get_plugin_config_dir() string {
 	buffer_size := int(n.call(nppm_getpluginsconfigdir, 0, 0)) + 1
 	mut buffer := vcalloc(buffer_size * 2)
-	
+
 	n.call(nppm_getpluginsconfigdir, usize(buffer_size), isize(buffer))
 	return unsafe { string_from_wide(buffer) }
 }

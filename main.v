@@ -16,36 +16,40 @@ fn C._vcleanup()
 fn C.GC_INIT()
 
 __global (
-	npp_data NppData
+	npp_data   NppData
 	func_items []FuncItem
 )
 
 const (
-	plugin_name = 'VLang'
+	plugin_name   = 'VLang'
 	language_name = 'VLang'
 )
 
 struct NppData {
 mut:
-	npp_handle voidptr
-	scintilla_main_handle voidptr
+	npp_handle              voidptr
+	scintilla_main_handle   voidptr
 	scintilla_second_handle voidptr
 }
 
 struct FuncItem {
 mut:
-	item_name [64]u16
-	p_func fn()
-	cmd_id int
+	item_name     [64]u16
+	p_func        fn ()
+	cmd_id        int
 	init_to_check bool
-	p_sh_key voidptr
+	p_sh_key      voidptr
 }
 
 [export: isUnicode]
-fn is_unicode() bool { return true }
+fn is_unicode() bool {
+	return true
+}
 
 [export: getName]
-fn get_name() &u16 { return plugin_name.to_wide() }
+fn get_name() &u16 {
+	return plugin_core.plugin_name.to_wide()
+}
 
 [export: setInfo]
 fn set_info(nppData NppData) {
@@ -54,7 +58,7 @@ fn set_info(nppData NppData) {
 	editor = sci.create_editors(nppData.scintilla_main_handle, nppData.scintilla_second_handle)
 
 	config_dir := npp.get_plugin_config_dir()
-	lang_xml := os.join_path(config_dir, language_name+'.xml')
+	lang_xml := os.join_path(config_dir, plugin_core.language_name + '.xml')
 	if !os.exists(lang_xml) {
 		if !create_lang_xml(lang_xml) {
 			msg := 'Unable to create VLang xml file\n$lang_xml'
@@ -68,12 +72,16 @@ fn get_funcs_array(mut nb_func &int) &FuncItem {
 	menu_functions := {
 		'Toggle FoldDebug Margin': toggle_debug_margin
 	}
-	
+
 	for k, v in menu_functions {
-		mut func_name := [64]u16 {init: 0}
-		func_name_length := k.len*2
-		unsafe { C.memcpy(&func_name[0], k.to_wide(), if func_name_length < 128 { func_name_length } else { 127 }) }
-		func_items << FuncItem {
+		mut func_name := [64]u16{init: 0}
+		func_name_length := k.len * 2
+		unsafe { C.memcpy(&func_name[0], k.to_wide(), if func_name_length < 128 {
+			func_name_length
+		} else {
+			127
+		}) }
+		func_items << FuncItem{
 			item_name: func_name
 			p_func: v
 			cmd_id: 0
@@ -81,9 +89,10 @@ fn get_funcs_array(mut nb_func &int) &FuncItem {
 			p_sh_key: voidptr(0)
 		}
 	}
-	unsafe { *nb_func = func_items.len }
+	unsafe {
+		*nb_func = func_items.len
+	}
 	return func_items.data
-	
 }
 
 [export: beNotified]
@@ -95,15 +104,14 @@ fn be_notified(notification &sci.SCNotification) {
 			if current_view == 0 {
 				editor.current_func = editor.main_func
 				editor.current_hwnd = editor.main_hwnd
-			}
-			else {
+			} else {
 				editor.current_func = editor.second_func
 				editor.current_hwnd = editor.second_hwnd
 			}
-			if editor.get_lexer_language() == language_name && show_debug_margin {
+			if editor.get_lexer_language() == plugin_core.language_name && show_debug_margin {
 				editor.set_debug_margin(44)
-			} else { 
-				editor.set_debug_margin(0) 
+			} else {
+				editor.set_debug_margin(0)
 			}
 		}
 		sci.scn_modified {
@@ -131,31 +139,30 @@ fn smart_indent(pos usize) string {
 	current_indent := editor.get_line_indentation(usize(current_line))
 	tab_width := editor.get_tab_width()
 	eol := match editor.get_eol_mode() {
-		0 {'\r\n'}
-		1 {'\r'}
-		else {'\n'}
+		0 { '\r\n' }
+		1 { '\r' }
+		else { '\n' }
 	}
 	mut add_tabs := '\t'
 	if current_indent > 0 {
-		add_tabs = '\t'.repeat(int(current_indent/tab_width)+1)
+		add_tabs = '\t'.repeat(int(current_indent / tab_width) + 1)
 	}
-	if int(editor.get_char_at(pos-1)) in [`{`, `(`, `[`] &&
-		int(editor.get_char_at(pos)) in [`}`, `)`, `]`] {
-		return eol+add_tabs+eol
+	if int(editor.get_char_at(pos - 1)) in [`{`, `(`, `[`]
+		&& int(editor.get_char_at(pos)) in [`}`, `)`, `]`] {
+		return eol + add_tabs + eol
 	}
 	return eol
 }
 
 fn toggle_debug_margin() {
-	if editor.get_lexer_language() == language_name {
+	if editor.get_lexer_language() == plugin_core.language_name {
 		show_debug_margin = !show_debug_margin
-		editor.set_debug_margin( if show_debug_margin { 44 } else { 0 } ) 
+		editor.set_debug_margin(if show_debug_margin { 44 } else { 0 })
 	}
 }
 
 fn create_lang_xml(path string) bool {
-	text := 
-r'<?xml version="1.0" encoding="UTF-8" ?>
+	text := r'<?xml version="1.0" encoding="UTF-8" ?>
 <NotepadPlus>
     <Languages>
         <Language name="VLang" ext="v" commentLine="//" commentStart="/*" commentEnd="*/">
@@ -194,13 +201,13 @@ r'<?xml version="1.0" encoding="UTF-8" ?>
     </LexerStyles>
 </NotepadPlus>
 '
-	os.write_file(path, text) or { return false }	
+	os.write_file(path, text) or { return false }
 	return true
 }
 
 [callconv: stdcall]
 [export: DllMain]
-fn main(hinst voidptr, fdw_reason int, lp_reserved voidptr) bool{
+fn main(hinst voidptr, fdw_reason int, lp_reserved voidptr) bool {
 	match fdw_reason {
 		C.DLL_PROCESS_ATTACH {
 			$if static_boehm ? {
@@ -213,7 +220,9 @@ fn main(hinst voidptr, fdw_reason int, lp_reserved voidptr) bool{
 		C.DLL_THREAD_ATTACH {}
 		C.DLL_THREAD_DETACH {}
 		C.DLL_PROCESS_DETACH {}
-		else { return false }
+		else {
+			return false
+		}
 	}
 	return true
 }

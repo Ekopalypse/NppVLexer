@@ -1,23 +1,20 @@
 module notepadpp
 
 pub const (
-	wm_user = 1024
-	nppmsg = wm_user + 1000
+	wm_user                  = 1024
+	nppmsg                   = wm_user + 1000
 
 	// nppm_getcurrentscintilla = nppmsg + 4
 	// nppm_getcurrentlangtype = nppmsg + 5
 	// nppm_setcurrentlangtype = nppmsg + 6
-
 	// nppm_getnbopenfiles = nppmsg + 7
 	// all_open_files = 0
 	// primary_view = 1
 	// second_view = 2
-
 	// nppm_getopenfilenames = nppmsg + 8
 	// nppm_modelessdialog = nppmsg + 12
 	// modelessdialogadd = 0
 	// modelessdialogremove = 1
-
 	// nppm_getnbsessionfiles = nppmsg + 13
 	// nppm_getsessionfiles = nppmsg + 14
 	// nppm_savesession = nppmsg + 15
@@ -30,7 +27,6 @@ pub const (
 	// nppm_getcurrentdocindex = nppmsg + 23
 	// main_view = 0
 	// sub_view = 1
-
 	// nppm_setstatusbar = nppmsg + 24
 	// statusbar_doc_type = 0
 	// statusbar_doc_size = 1
@@ -38,7 +34,6 @@ pub const (
 	// statusbar_eof_format = 3
 	// statusbar_unicode_type = 4
 	// statusbar_typing_mode = 5
-
 	// nppm_getmenuhandle = nppmsg + 25
 	// npppluginmenu = 0
 	// nppmainmenu = 1
@@ -63,6 +58,7 @@ pub const (
 	// nppm_makecurrentbufferdirty = nppmsg + 44
 	// nppm_getenablethemetexturefunc = nppmsg + 45
 	nppm_getpluginsconfigdir = nppmsg + 46
+
 	// nppm_msgtoplugin = nppmsg + 47
 	// nppm_menucommand = nppmsg + 48
 	// nppm_triggertabbarcontextmenu = nppmsg + 49
@@ -98,7 +94,8 @@ pub const (
 	// nppm_showdocswitcher = nppmsg + 85
 	// nppm_isdocswitchershown = nppmsg + 86
 	// nppm_getappdatapluginsallowed = nppmsg + 87
-	nppm_getcurrentview = nppmsg + 88
+	nppm_getcurrentview      = nppmsg + 88
+
 	// nppm_docswitcherdisablecolumn = nppmsg + 89
 	// nppm_geteditordefaultforegroundcolor = nppmsg + 90
 	// nppm_geteditordefaultbackgroundcolor = nppmsg + 91
@@ -109,7 +106,6 @@ pub const (
 	// nppm_removeshortcutbycmdid = nppmsg + 96
 	// nppm_getpluginhomepath = nppmsg + 97
 	// nppm_getsettingsoncloudpath = nppmsg + 98
-
 	// var_not_recognized = 0
 	// full_current_path = 1
 	// current_directory = 2
@@ -122,7 +118,6 @@ pub const (
 	// current_column = 9
 	// npp_full_file_path = 10
 	// getfilenameatcursor = 11
-
 	// runcommand_user = wm_user + 3000
 	// nppm_getfullcurrentpath = runcommand_user + full_current_path
 	// nppm_getcurrentdirectory = runcommand_user + current_directory
@@ -135,10 +130,10 @@ pub const (
 	// nppm_getcurrentline = runcommand_user + current_line
 	// nppm_getcurrentcolumn = runcommand_user + current_column
 	// nppm_getnppfullfilepath = runcommand_user + npp_full_file_path
-
 	// Notification code
-	nppn_first = 1000
-	nppn_ready = nppn_first + 1
+	nppn_first               = 1000
+	nppn_ready               = nppn_first + 1
+
 	// nppn_tbmodification = nppn_first + 2
 	// nppn_filebeforeclose = nppn_first + 3
 	// nppn_fileopened = nppn_first + 4
@@ -147,25 +142,23 @@ pub const (
 	// nppn_filebeforesave = nppn_first + 7
 	// nppn_filesaved = nppn_first + 8
 	// nppn_shutdown = nppn_first + 9
-	nppn_bufferactivated = nppn_first + 10
-	// nppn_langchanged = nppn_first + 11
-	// nppn_wordstylesupdated = nppn_first + 12
-	// nppn_shortcutremapped = nppn_first + 13
-	// nppn_filebeforeload = nppn_first + 14
-	// nppn_fileloadfailed = nppn_first + 15
-	// nppn_readonlychanged = nppn_first + 16
-
-	// docstatus_readonly = 1
-	// docstatus_bufferdirty = 2
-
-	// nppn_docorderchanged = nppn_first + 17
-	// nppn_snapshotdirtyfileloaded = nppn_first + 18
-	// nppn_beforeshutdown = nppn_first + 19
-	// nppn_cancelshutdown = nppn_first + 20
-	// nppn_filebeforerename = nppn_first + 21
-	// nppn_filerenamecancel = nppn_first + 22
-	// nppn_filerenamed = nppn_first + 23
-	// nppn_filebeforedelete = nppn_first + 24
-	// nppn_filedeletefailed = nppn_first + 25
-	// nppn_filedeleted = nppn_first + 26
+	nppn_bufferactivated     = nppn_first + 10
+		// nppn_langchanged = nppn_first + 11
+		// nppn_wordstylesupdated = nppn_first + 12
+		// nppn_shortcutremapped = nppn_first + 13
+		// nppn_filebeforeload = nppn_first + 14
+		// nppn_fileloadfailed = nppn_first + 15
+		// nppn_readonlychanged = nppn_first + 16
+		// docstatus_readonly = 1
+		// docstatus_bufferdirty = 2
+		// nppn_docorderchanged = nppn_first + 17
+		// nppn_snapshotdirtyfileloaded = nppn_first + 18
+		// nppn_beforeshutdown = nppn_first + 19
+		// nppn_cancelshutdown = nppn_first + 20
+		// nppn_filebeforerename = nppn_first + 21
+		// nppn_filerenamecancel = nppn_first + 22
+		// nppn_filerenamed = nppn_first + 23
+		// nppn_filebeforedelete = nppn_first + 24
+		// nppn_filedeletefailed = nppn_first + 25
+		// nppn_filedeleted = nppn_first + 26
 )
