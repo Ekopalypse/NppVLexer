@@ -331,12 +331,10 @@ fn lex(self &ILexer, start_pos usize, length_doc isize, init_style int, p_access
 		2 { lexer.state = LexState.comment_block }
 		5 {
 			// go back and find out which char started the current string
-			for i:=usize(start_pos-1); i>=0; i-- {
+			for i:=start_pos-1; i>=0; i-- {
 				style := idoc.vtable.style_at(p_access, isize(i))
 				if style != char(LexState.strings) {
-					mut chr := char(0)
-					idoc.vtable.get_char_range(p_access, &chr, isize(i+1), 1)
-					lexer.string_starts_with = u8(chr)
+					idoc.vtable.get_char_range(p_access, &lexer.string_starts_with, isize(i+1), 1)
 					break
 				}
 			}
