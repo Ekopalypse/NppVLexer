@@ -82,8 +82,7 @@ struct IDocumentVtable {
 	get_line_indentation             fn (self &IDocument, line isize) int
 	line_end                         fn (self &IDocument, line isize) isize
 	get_relative_position            fn (self &IDocument, position_start isize, character_offset isize) isize
-	get_character_and_width          fn (self &IDocument, position isize, p_width isize) int
-	// p_width needs to be a pointer
+	get_character_and_width          fn (self &IDocument, position isize, p_width &isize) int
 }
 
 enum LexState {
@@ -147,10 +146,12 @@ fn (mut l Lexer) init(pos usize, length isize, buffer_ptr &char, doc_length isiz
 	l.before_previous_char = ` `
 	l.previous_char = ` `
 	l.next_char = ` `
-	// l.nested_comment_block = 0
-	// l.string_starts_with = ` `
 	l.current_word = ''
 	l.is_keyword_or_number = false
+	// The following elements should not be initialized, because the old state is needed
+	// l.nested_comment_block = 0
+	// l.string_starts_with = ` `
+	// l.is_raw_string
 }
 
 // lexer helper functions
