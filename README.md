@@ -26,6 +26,8 @@ v.exe -cc gcc -d static_boehm -gc boehm -enable-globals -shared -d no_backtrace 
 
 ## Release History
 
+* 0.2
+	* updated to version V 0.2.4 cb60392
 * 0.1
     * stable version
 

@@ -84,8 +84,8 @@ pub fn (e Editor) line_from_position(position usize) isize {
 	return e.call(sci_linefromposition, position, 0)
 }
 
-pub fn (e Editor) get_char_at(position usize) byte {
-	return byte(e.call(sci_getcharat, position, 0))
+pub fn (e Editor) get_char_at(position usize) u8 {
+	return u8(e.call(sci_getcharat, position, 0))
 }
 
 pub fn (e Editor) get_lexer_language() string {

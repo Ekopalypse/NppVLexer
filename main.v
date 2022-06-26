@@ -164,7 +164,7 @@ r'<?xml version="1.0" encoding="UTF-8" ?>
             <Keywords name="type1">void voidptr charptr byteptr</Keywords>
             <Keywords name="type2">__global __offsetof</Keywords>
             <Keywords name="type3">fn array map chan struct enum interface union import module unsafe const</Keywords>
-            <Keywords name="type4">attrtwo debuglivetest deprecated direct_array_access export inline manualfree testing trusted unsafe windows_stdcall</Keywords>
+            <Keywords name="type4">attrtwo debuglivetest deprecated direct_array_access export inline manualfree testing trusted unsafe callconv: stdcall</Keywords>
             <Keywords name="type5" />
             <Keywords name="type6" />
         </Language>
@@ -198,7 +198,7 @@ r'<?xml version="1.0" encoding="UTF-8" ?>
 	return true
 }
 
-[windows_stdcall]
+[callconv: stdcall]
 [export: DllMain]
 fn main(hinst voidptr, fdw_reason int, lp_reserved voidptr) bool{
 	match fdw_reason {

@@ -127,11 +127,11 @@ mut:
 	end_pos usize
 	state LexState
 	next_state LexState
-	before_previous_char byte
-	previous_char byte
-	next_char byte
+	before_previous_char u8
+	previous_char u8
+	next_char u8
 	nested_comment_block int
-	string_starts_with byte
+	string_starts_with u8
 	current_word string
 	is_keyword_or_number bool
 }
@@ -156,7 +156,7 @@ fn (mut l Lexer) init(pos usize, length isize, buffer_ptr &char, doc_length isiz
 
 // lexer helper functions
 [inline]
-fn is_word_char(ch byte) bool {
+fn is_word_char(ch u8) bool {
 	return (((ch >= `0`) && (ch <= `9`)) ||
 		    ((ch >= `a`) && (ch <= `z`)) ||
 		    ((ch >= `A`) && (ch <= `Z`)) ||
@@ -165,7 +165,7 @@ fn is_word_char(ch byte) bool {
 
 
 [inline]
-fn is_word_start(ch byte) bool {
+fn is_word_start(ch u8) bool {
 	return ((ch >= `a`) && (ch <= `z`)) ||
 		   ((ch >= `A`) && (ch <= `Z`)) ||
 		   ch == `_`
@@ -173,7 +173,7 @@ fn is_word_start(ch byte) bool {
 
 
 [inline]
-fn is_number_char(ch byte) bool {
+fn is_number_char(ch u8) bool {
 	return (((ch >= `0`) && (ch <= `9`)) ||
 		    ((ch >= `a`) && (ch <= `f`)) || (ch == `o`) || (ch == `x`) ||
 		    ((ch >= `A`) && (ch <= `F`)) || (ch == `O`) || (ch == `X`) ||
@@ -182,7 +182,7 @@ fn is_number_char(ch byte) bool {
 
 
 // typedef int (EXT_LEXER_DECL *GetLexerCountFn)();
-[windows_stdcall]
+[callconv: stdcall]
 [export: GetLexerCount]
 fn get_lexer_count() int {
 	return 1
@@ -190,7 +190,7 @@ fn get_lexer_count() int {
 
 
 // typedef void (EXT_LEXER_DECL *GetLexerNameFn)(unsigned int Index, char *name, int buflength);
-[windows_stdcall]
+[callconv: stdcall]
 [export: GetLexerName]
 fn get_lexer_name(index u32, name &char, buf_length int) {
     mut src := language_name
@@ -202,7 +202,7 @@ fn get_lexer_name(index u32, name &char, buf_length int) {
 
 
 // typedef void (EXT_LEXER_DECL *GetLexerStatusTextFn)(unsigned int Index, TCHAR *desc, int buflength);
-[windows_stdcall]
+[callconv: stdcall]
 [export: GetLexerStatusText]
 fn get_lexer_status_text(index u32, desc &char, buf_length int) {
     mut src := language_desc
@@ -213,26 +213,26 @@ fn get_lexer_status_text(index u32, desc &char, buf_length int) {
 }
 
 // scintilla with ILexer5 start
-[windows_stdcall]
+[callconv: stdcall]
 [export: CreateLexer]
 fn create_lexer(name charptr) &ILexer {
 	return &ilexer
 }
 
-[windows_stdcall]
+[callconv: stdcall]
 [export: GetNameSpace]
 fn get_namespace() charptr {
 	return 'vlang.VLang'.str
 }
 
 // void SetLibraryProperty(const char *key, const char *value)
-[windows_stdcall]
+[callconv: stdcall]
 [export: SetLibraryProperty]
 fn set_library_property(key charptr, value charptr) {
 	// ignore for now
 }
 
-[windows_stdcall]
+[callconv: stdcall]
 [export: GetLibraryPropertyNames]
 fn get_library_property_names() charptr {
 	return ''.str
@@ -240,68 +240,68 @@ fn get_library_property_names() charptr {
 // scintilla with ILexer5 end
 
 // scintilla with ILexer4 start
-[windows_stdcall]
+[callconv: stdcall]
 [export: CreateLexerFactory]
 fn get_lexer_factory(index int) fn() voidptr {
 	return ilexer_implementation
 }
 
-[windows_stdcall]
+[callconv: stdcall]
 fn ilexer_implementation() voidptr {
 	return voidptr(&ilexer)
 }
 // scintilla with ILexer4 end
 
 // virtual int SCI_METHOD Version() const = 0
-[windows_stdcall]
+[callconv: stdcall]
 fn version(self &ILexer) int {
 	return 2
 }
 
 
 // virtual void SCI_METHOD Release() = 0
-[windows_stdcall]
+[callconv: stdcall]
 fn release(self &ILexer) {
 }
 
 
 // virtual const char * SCI_METHOD PropertyNames() = 0
-[windows_stdcall]
+[callconv: stdcall]
 fn property_names(self &ILexer) &char {
 	return &char(''.str)
 }
 
 
 // virtual int SCI_METHOD PropertyType(const char *name) = 0
-[windows_stdcall]
+[callconv: stdcall]
 fn property_type(self &ILexer,name &char) int{
 	return 0
 }
 
 
 // virtual const char * SCI_METHOD DescribeProperty(const char *name) = 0
-[windows_stdcall]
+[callconv: stdcall]
 fn describe_property(self &ILexer, name &char) &char {
 	return unsafe { name }
 }
 
 
 // virtual i64 SCI_METHOD PropertySet(const char *key, const char *val) = 0
-[windows_stdcall]
+[callconv: stdcall]
 fn property_set(self &ILexer, key &char, val &char) isize {
 	return -1
 }
 
 
 // virtual const char * SCI_METHOD DescribeWordListSets() = 0
-[windows_stdcall]
+[callconv: stdcall]
 fn describe_word_list_sets(self &ILexer) &char {
 	return unsafe { &char('kw1\nkw2\nkw3\nkw4\nkw5\nkw6\nkw7\nkw8'.str) }
 }
 
 
 // virtual i64 SCI_METHOD WordListSet(int n, const char *wl) = 0
-[windows_stdcall]
+[callconv: stdcall]
 fn word_list_set(self &ILexer, kw_list_index int, key_word_list &char) isize {
 	
 	updated_keywords := unsafe { cstring_to_vstring(key_word_list).split(' ') }
@@ -320,7 +320,7 @@ fn word_list_set(self &ILexer, kw_list_index int, key_word_list &char) isize {
 }
 
 // virtual void SCI_METHOD Lex(Sci_PositionU startPos, i64 lengthDoc, int initStyle, IDocument *pAccess) = 0;
-[windows_stdcall]
+[callconv: stdcall]
 fn lex(self &ILexer, start_pos usize, length_doc isize, init_style int, p_access voidptr) { 
 	idoc := &IDocument(p_access)
 	real_doc_length := idoc.vtable.length(p_access)
@@ -336,7 +336,7 @@ fn lex(self &ILexer, start_pos usize, length_doc isize, init_style int, p_access
 				if style != char(LexState.strings) {
 					mut chr := char(0)
 					idoc.vtable.get_char_range(p_access, &chr, isize(i+1), 1)
-					lexer.string_starts_with = &byte(&chr) // TODO: cast char to byte - safe??
+					lexer.string_starts_with = u8(chr)
 					break
 				}
 			}
@@ -469,7 +469,7 @@ fn lex(self &ILexer, start_pos usize, length_doc isize, init_style int, p_access
 
 
 // virtual void SCI_METHOD Fold(Sci_PositionU startPos, usize lengthDoc, isize initStyle, IDocument *pAccess) = 0;
-[windows_stdcall]
+[callconv: stdcall]
 fn fold(self &ILexer, start_pos usize, length_doc isize, init_style int, p_access voidptr) {
 	/*
 		Logic:
@@ -524,7 +524,7 @@ fn fold(self &ILexer, start_pos usize, length_doc isize, init_style int, p_acces
 
 
 // virtual void * SCI_METHOD PrivateCall(int operation, void *pointer) = 0;
-[windows_stdcall]
+[callconv: stdcall]
 fn private_call(self &ILexer, operation int, pointer voidptr) voidptr{
 	// not needed/supported by this lexer
 	return voidptr(0)
@@ -532,14 +532,14 @@ fn private_call(self &ILexer, operation int, pointer voidptr) voidptr{
 
 
 // virtual int SCI_METHOD LineEndTypesSupported() = 0;
-[windows_stdcall]
+[callconv: stdcall]
 fn line_end_types_supported(self &ILexer) int {
 	return 0
 }
 
 
 // virtual int SCI_METHOD AllocateSubStyles(int styleBase, int numberStyles) = 0;
-[windows_stdcall]
+[callconv: stdcall]
 fn allocate_sub_styles(self &ILexer, style_base int, number_styles int) int {
 	// used for sub styles - not needed/supported by this lexer
 	return -1
@@ -547,7 +547,7 @@ fn allocate_sub_styles(self &ILexer, style_base int, number_styles int) int {
 
 
 // virtual int SCI_METHOD SubStylesStart(int styleBase) = 0;
-[windows_stdcall]
+[callconv: stdcall]
 fn sub_styles_start(self &ILexer, style_base int) int {
 	// used for sub styles - not needed/supported by this lexer
 	return -1
@@ -555,7 +555,7 @@ fn sub_styles_start(self &ILexer, style_base int) int {
 
 
 // virtual int SCI_METHOD SubStylesLength(int styleBase) = 0;
-[windows_stdcall]
+[callconv: stdcall]
 fn sub_styles_length(self &ILexer, style_base int) int {
 	// used for sub styles - not needed/supported by this lexer
 	return 0
@@ -563,7 +563,7 @@ fn sub_styles_length(self &ILexer, style_base int) int {
 
 
 // virtual int SCI_METHOD StyleFromSubStyle(int subStyle) = 0;
-[windows_stdcall]
+[callconv: stdcall]
 fn style_from_sub_style(self &ILexer, sub_style int) int {
 	// used for sub styles - not needed/supported by this lexer
 	return sub_style
@@ -571,7 +571,7 @@ fn style_from_sub_style(self &ILexer, sub_style int) int {
 
 
 // virtual int SCI_METHOD PrimaryStyleFromStyle(int style) = 0;
-[windows_stdcall]
+[callconv: stdcall]
 fn primary_style_from_style(self &ILexer, style int) int {
 	// used for sub styles - not needed/supported by this lexer
 	return style
@@ -579,21 +579,21 @@ fn primary_style_from_style(self &ILexer, style int) int {
 
 
 // virtual void SCI_METHOD FreeSubStyles() = 0;
-[windows_stdcall]
+[callconv: stdcall]
 fn free_sub_styles(self &ILexer) {
 	// used for sub styles - not needed/supported by this lexer
 }
 
 
 // virtual void SCI_METHOD SetIdentifiers(int style, const char *identifiers) = 0;
-[windows_stdcall]
+[callconv: stdcall]
 fn set_identifiers(self &ILexer, style int, identifiers &char) {
 	// used for sub styles - not needed/supported by this lexer
 }
 
 
 // virtual int SCI_METHOD DistanceToSecondaryStyles() = 0;
-[windows_stdcall]
+[callconv: stdcall]
 fn distance_to_secondary_styles(self &ILexer) int {
 	// used for sub styles - not needed/supported by this lexer
 	return 0
@@ -601,7 +601,7 @@ fn distance_to_secondary_styles(self &ILexer) int {
 
 
 // virtual const char * SCI_METHOD GetSubStyleBases() = 0;
-[windows_stdcall]
+[callconv: stdcall]
 fn get_sub_style_bases(self &ILexer) &char {
 	// used for sub styles - not needed/supported by this lexer
 	return &char(''.str)
@@ -609,14 +609,14 @@ fn get_sub_style_bases(self &ILexer) &char {
 
 
 // virtual int SCI_METHOD NamedStyles() = 0;
-[windows_stdcall]
+[callconv: stdcall]
 fn named_styles(self &ILexer) int {
 	return 15
 }
 
 
 // virtual const char * SCI_METHOD NameOfStyle(int style) = 0;
-[windows_stdcall]
+[callconv: stdcall]
 fn name_of_style(self &ILexer, style int) &char {
 	style_name := match style {
 		0	{ "Default".str }
@@ -641,30 +641,30 @@ fn name_of_style(self &ILexer, style int) &char {
 
 
 // virtual const char * SCI_METHOD TagsOfStyle(int style) = 0;
-[windows_stdcall]
+[callconv: stdcall]
 fn tags_of_style(self &ILexer, style int) &char {
 	return name_of_style(self, style)
 }
 
 
 // virtual const char * SCI_METHOD DescriptionOfStyle(int style) = 0;
-[windows_stdcall]
+[callconv: stdcall]
 fn description_of_style(self &ILexer, style int) &char {
 	return name_of_style(self, style)
 }
 
 // ILexer 5 functions
-[windows_stdcall]
+[callconv: stdcall]
 fn get_name(self &ILexer) &char {
 	return unsafe { &char(language_name.str) }
 }
 
-[windows_stdcall]
+[callconv: stdcall]
 fn get_identifier(self &ILexer) int {
 	return 1
 }
 
-[windows_stdcall]
+[callconv: stdcall]
 fn get_property(self &ILexer, key &char) &char {
 	return unsafe { ''.str }
 }
