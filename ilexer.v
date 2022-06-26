@@ -303,7 +303,7 @@ fn describe_word_list_sets(self &ILexer) &char {
 // virtual i64 SCI_METHOD WordListSet(int n, const char *wl) = 0
 [callconv: stdcall]
 fn word_list_set(self &ILexer, kw_list_index int, key_word_list &char) isize {
-	
+
 	updated_keywords := unsafe { cstring_to_vstring(key_word_list).split(' ') }
 	match kw_list_index {
 		0 { key_words.kw1 = updated_keywords }
@@ -321,7 +321,7 @@ fn word_list_set(self &ILexer, kw_list_index int, key_word_list &char) isize {
 
 // virtual void SCI_METHOD Lex(Sci_PositionU startPos, i64 lengthDoc, int initStyle, IDocument *pAccess) = 0;
 [callconv: stdcall]
-fn lex(self &ILexer, start_pos usize, length_doc isize, init_style int, p_access voidptr) { 
+fn lex(self &ILexer, start_pos usize, length_doc isize, init_style int, p_access voidptr) {
 	idoc := &IDocument(p_access)
 	real_doc_length := idoc.vtable.length(p_access)
 	buffer_ptr := idoc.vtable.buffer_pointer(p_access)
@@ -390,7 +390,7 @@ fn lex(self &ILexer, start_pos usize, length_doc isize, init_style int, p_access
 				else if ch == `/` && lexer.next_char == `*` {
 					lexer.state = LexState.comment_block
 				}
-				else if ch == `"` || ch == `'` || ch == 96 {  // 96 == ```
+				else if ch == `"` || ch == `'` || ch == `\`` {
 					lexer.state = LexState.strings
 					lexer.string_starts_with = ch
 				}
@@ -442,10 +442,10 @@ fn lex(self &ILexer, start_pos usize, length_doc isize, init_style int, p_access
 		lexer.before_previous_char = lexer.previous_char
 		if lexer.is_keyword_or_number {
 			word_length := lexer.current_word.len
-			
+
 			idoc.vtable.start_styling(p_access, isize(start_pos)+i-word_length)
 			idoc.vtable.set_style_for(p_access, word_length, char(lexer.state))
-			
+
 			i--
 			lexer.previous_char = lexer.buffer[i]
 			lexer.state = lexer.next_state
@@ -496,7 +496,7 @@ fn fold(self &ILexer, start_pos usize, length_doc isize, init_style int, p_acces
 
 	mut chr := char(0)
 	for i := isize(start_pos); i < end_pos; i++ {
-		idoc.vtable.get_char_range(p_access, &chr, i, 1)		
+		idoc.vtable.get_char_range(p_access, &chr, i, 1)
 		current_char := unsafe { chr.vstring_with_len(1) }
 
 		style := idoc.vtable.style_at(p_access, i)
