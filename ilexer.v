@@ -134,10 +134,11 @@ mut:
 	current_word         string
 	is_keyword_or_number bool
 	is_raw_string        bool
+	// read_only_buffer     string
 }
 
 fn (mut l Lexer) init(pos usize, length isize, buffer_ptr &char, doc_length isize) {
-	l.buffer = unsafe { buffer_ptr.vstring_with_len(int(doc_length))[int(pos)..int(pos) + int(length)] }
+	l.buffer = unsafe { buffer_ptr.vstring_literal_with_len(int(doc_length))[int(pos)..int(pos) + int(length)] }
 	l.length = usize(length)
 	l.position = pos
 	l.end_pos = pos + l.length
@@ -152,6 +153,7 @@ fn (mut l Lexer) init(pos usize, length isize, buffer_ptr &char, doc_length isiz
 	// l.nested_comment_block = 0
 	// l.string_starts_with = ` `
 	// l.is_raw_string
+	// l.read_only_buffer = unsafe { buffer_ptr.vstring_literal_with_len(doc_length) }
 }
 
 // lexer helper functions
@@ -315,12 +317,44 @@ fn lex(self &ILexer, start_pos usize, length_doc isize, init_style int, p_access
 	lexer.init(start_pos, length_doc, buffer_ptr, real_doc_length)
 	match init_style {
 		// not needed to check LexState.comment_line as scintilla starts lexing from start of line always
-		2 { lexer.state = LexState.comment_block }
-		5 { lexer.state = LexState.strings }
+		2 { 
+			lexer.state = LexState.comment_block 
+			lexer.nested_comment_block = 0
+			// go back and find out how many levels are availble
+			for i:=usize(start_pos-1); i>=0; i-- {
+				style := idoc.vtable.style_at(p_access, isize(i))
+				if style != char(LexState.comment_block) {
+					break
+				}
+				if i > 0 {
+					mut current := char(0)
+					mut before_current := char(0)
+					idoc.vtable.get_char_range(p_access, &current, isize(i), 1)
+					idoc.vtable.get_char_range(p_access, &before_current, isize(i-1), 1)
+					if current == `*` && before_current == `/` {
+						lexer.nested_comment_block++
+					} else if current == `/` && before_current == `*` {
+						lexer.nested_comment_block--
+					}
+				}
+			}	
+		}
+		5 { 
+			// go back and find out which char started the string
+			for i:=start_pos-1; i>=0; i-- {
+				style := idoc.vtable.style_at(p_access, isize(i))
+				if style != char(LexState.strings) {
+					idoc.vtable.get_char_range(p_access, &lexer.string_starts_with, isize(i+1), 1)
+					break
+				}
+			}
+			lexer.state = LexState.strings
+		}
 		else {
 			lexer.state = LexState.default
 			lexer.is_raw_string = false
 			lexer.string_starts_with = ` `
+			lexer.nested_comment_block = 0
 		}
 	}
 
@@ -380,9 +414,7 @@ fn lex(self &ILexer, start_pos usize, length_doc isize, init_style int, p_access
 					lexer.state = LexState.comment_line
 				} else if ch == `/` && lexer.next_char == `*` {
 					lexer.state = LexState.comment_block
-					println('++nested_comment_block: ${lexer.nested_comment_block}')
 					lexer.nested_comment_block++
-					println('==nested_comment_block: ${lexer.nested_comment_block}')
 				} else if ch == `"` || ch == `'` || ch == `\`` {
 					lexer.state = LexState.strings
 					lexer.string_starts_with = ch
@@ -413,13 +445,9 @@ fn lex(self &ILexer, start_pos usize, length_doc isize, init_style int, p_access
 			.comment_block {
 				// TODO: nested comment blocks
 				if ch == `/` && lexer.next_char == `*` {
-					println(' ++already in nested_comment_block: ${lexer.nested_comment_block}')
 					lexer.nested_comment_block++
-					println(' ==already in nested_comment_block: ${lexer.nested_comment_block}')
 				} else if ch == `/` && lexer.previous_char == `*` {
-					println(' --already in nested_comment_block: ${lexer.nested_comment_block}')
 					lexer.nested_comment_block--
-					println(' ~~already in nested_comment_block: ${lexer.nested_comment_block}')
 					if lexer.nested_comment_block == 0 {
 						lexer.next_state = LexState.default
 					}
@@ -495,7 +523,7 @@ fn fold(self &ILexer, start_pos usize, length_doc isize, init_style int, p_acces
 	mut chr := char(0)
 	for i := isize(start_pos); i < end_pos; i++ {
 		idoc.vtable.get_char_range(p_access, &chr, i, 1)
-		current_char := unsafe { chr.vstring_with_len(1) }
+		current_char := unsafe { chr.vstring_literal_with_len(1) }
 
 		style := idoc.vtable.style_at(p_access, i)
 		match true {
