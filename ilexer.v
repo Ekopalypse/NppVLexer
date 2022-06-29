@@ -134,7 +134,6 @@ mut:
 	current_word         string
 	is_keyword_or_number bool
 	is_raw_string        bool
-	// read_only_buffer     string
 }
 
 fn (mut l Lexer) init(pos usize, length isize, buffer_ptr &char, doc_length isize) {
@@ -153,7 +152,6 @@ fn (mut l Lexer) init(pos usize, length isize, buffer_ptr &char, doc_length isiz
 	// l.nested_comment_block = 0
 	// l.string_starts_with = ` `
 	// l.is_raw_string
-	// l.read_only_buffer = unsafe { buffer_ptr.vstring_literal_with_len(doc_length) }
 }
 
 // lexer helper functions
@@ -337,7 +335,7 @@ fn lex(self &ILexer, start_pos usize, length_doc isize, init_style int, p_access
 						lexer.nested_comment_block--
 					}
 				}
-			}	
+			}
 		}
 		5 { 
 			// go back and find out which char started the string
