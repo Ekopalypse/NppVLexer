@@ -380,7 +380,9 @@ fn lex(self &ILexer, start_pos usize, length_doc isize, init_style int, p_access
 					lexer.state = LexState.comment_line
 				} else if ch == `/` && lexer.next_char == `*` {
 					lexer.state = LexState.comment_block
+					println('++nested_comment_block: ${lexer.nested_comment_block}')
 					lexer.nested_comment_block++
+					println('==nested_comment_block: ${lexer.nested_comment_block}')
 				} else if ch == `"` || ch == `'` || ch == `\`` {
 					lexer.state = LexState.strings
 					lexer.string_starts_with = ch
@@ -411,9 +413,13 @@ fn lex(self &ILexer, start_pos usize, length_doc isize, init_style int, p_access
 			.comment_block {
 				// TODO: nested comment blocks
 				if ch == `/` && lexer.next_char == `*` {
+					println(' ++already in nested_comment_block: ${lexer.nested_comment_block}')
 					lexer.nested_comment_block++
+					println(' ==already in nested_comment_block: ${lexer.nested_comment_block}')
 				} else if ch == `/` && lexer.previous_char == `*` {
+					println(' --already in nested_comment_block: ${lexer.nested_comment_block}')
 					lexer.nested_comment_block--
+					println(' ~~already in nested_comment_block: ${lexer.nested_comment_block}')
 					if lexer.nested_comment_block == 0 {
 						lexer.next_state = LexState.default
 					}
