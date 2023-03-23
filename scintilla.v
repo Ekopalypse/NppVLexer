@@ -116,9 +116,9 @@ pub fn (e Editor) get_lexer_language() string {
 }
 
 pub fn (e Editor) set_debug_margin(width isize) {
-	e.call(sci_setmargins, 4, 0)
-	e.call(sci_setmargintypen, 3, sc_margin_text)
-	e.call(sci_setmarginwidthn, 3, width)
+	e.call(sci_setmargins, 5, 0)
+	e.call(sci_setmargintypen, 4, sc_margin_text)
+	e.call(sci_setmarginwidthn, 4, width)
 }
 
 pub fn (e Editor) set_debug_margin_text(line usize, level isize) {
