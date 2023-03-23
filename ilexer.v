@@ -104,6 +104,7 @@ enum LexState {
 	functions
 	data_structures
 	c_functions
+	string_interpolation
 }
 
 struct Keywords {
@@ -306,7 +307,7 @@ fn word_list_set(self &ILexer, kw_list_index int, key_word_list &char) isize {
 // virtual void SCI_METHOD Lex(Sci_PositionU startPos, i64 lengthDoc, int initStyle, IDocument *pAccess) = 0;
 [callconv: stdcall]
 fn lex(self &ILexer, start_pos usize, length_doc isize, init_style int, p_access voidptr) {
-	idoc := &IDocument(p_access)
+	idoc := unsafe { &IDocument(p_access) }
 	real_doc_length := idoc.vtable.length(p_access)
 	buffer_ptr := idoc.vtable.buffer_pointer(p_access)
 	if buffer_ptr == 0 {
@@ -315,8 +316,8 @@ fn lex(self &ILexer, start_pos usize, length_doc isize, init_style int, p_access
 	lexer.init(start_pos, length_doc, buffer_ptr, real_doc_length)
 	match init_style {
 		// not needed to check LexState.comment_line as scintilla starts lexing from start of line always
-		2 { 
-			lexer.state = LexState.comment_block 
+		2 {
+			lexer.state = LexState.comment_block
 			lexer.nested_comment_block = 0
 			// go back and find out how many levels are availble
 			for i:=usize(start_pos-1); i>=0; i-- {
@@ -337,7 +338,7 @@ fn lex(self &ILexer, start_pos usize, length_doc isize, init_style int, p_access
 				}
 			}
 		}
-		5 { 
+		5 {
 			// go back and find out which char started the string
 			for i:=start_pos-1; i>=0; i-- {
 				style := idoc.vtable.style_at(p_access, isize(i))
@@ -454,13 +455,22 @@ fn lex(self &ILexer, start_pos usize, length_doc isize, init_style int, p_access
 			.number {}
 			.operator {}
 			.strings {
+				// check if string interpolation starts
+				if ch == `$` && lexer.next_char == `{` {
+					lexer.state = LexState.string_interpolation
+				}
 				// like '\'' and '\\' and r'\'
-				if (ch == lexer.string_starts_with && lexer.previous_char == `\\`
+				else if (ch == lexer.string_starts_with && lexer.previous_char == `\\`
 					&& lexer.before_previous_char == `\\`)
-					|| (ch == lexer.string_starts_with && lexer.previous_char != `\\`) 
+					|| (ch == lexer.string_starts_with && lexer.previous_char != `\\`)
 					|| (ch == lexer.string_starts_with && lexer.next_char != ch && lexer.is_raw_string) {
 					lexer.next_state = LexState.default
 					lexer.is_raw_string = false
+				}
+			}
+			.string_interpolation {
+				if ch == `}` {
+					lexer.next_state = LexState.strings
 				}
 			}
 			else {}
@@ -500,7 +510,7 @@ fn fold(self &ILexer, start_pos usize, length_doc isize, init_style int, p_acces
 			and next line base value will be increased by 1
 		- a line with } decreases the next line base value by 1
 	*/
-	idoc := &IDocument(p_access)
+	idoc := unsafe { &IDocument(p_access) }
 
 	mut cur_level := sci.sc_foldlevelbase
 	mut cur_line := idoc.vtable.line_from_position(p_access, isize(start_pos))

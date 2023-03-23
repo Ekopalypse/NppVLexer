@@ -14,8 +14,8 @@ A V lexer plugin for Notepad++ (ONLY 64bit version available)
 
 ## Building manually
 
-This plugin is written in the [programming language V](https://github.com/vlang/v) and must therefore be available to build this plugin.  
-Furthermore, a current version of the gcc compiler, >= version 10 recommended, must be installed.  
+This plugin is written in the [programming language V](https://github.com/vlang/v) and must therefore be available to build this plugin.
+Furthermore, a current version of the gcc compiler, >= version 10 recommended, must be installed.
 
 
 ```
@@ -25,12 +25,15 @@ v.exe -cc gcc -d static_boehm -gc boehm -enable-globals -shared -d no_backtrace 
 
 
 ## Release History
+* 0.4
+	* updated to V 0.3.3 9a9cfe4
+	* string interpolation coloring added
 * 0.3
 	* make nested comment blocks possible
 * 0.2
 	* updated to version V 0.2.4 cb60392
 * 0.1
-    * stable version
+	* stable version
 
 ## Meta
 

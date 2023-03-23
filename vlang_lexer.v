@@ -177,26 +177,27 @@ fn create_lang_xml(path string) bool {
         </Language>
     </Languages>
     <LexerStyles>
-        <LexerType name="VLang" desc="V Programming Language" ext="vv" excluded="no">
-            <WordsStyle styleID="0"  name="Default"        fgColor="ABB2BF" bgColor="292C34" colorStyle="0" fontStyle="0" />
-            <WordsStyle styleID="1"  name="LineComments"   fgColor="5C636F" bgColor="292C34" colorStyle="1" fontStyle="0" />
-            <WordsStyle styleID="2"  name="BlockComments"  fgColor="5C636F" bgColor="292C34" colorStyle="1" fontStyle="0" />
-            <WordsStyle styleID="3"  name="Numbers"        fgColor="D8A776" bgColor="292C34" colorStyle="1" fontStyle="0" />
-            <WordsStyle styleID="4"  name="Operators"      fgColor="56B6C2" bgColor="292C34" colorStyle="1" fontStyle="0" />
-            <WordsStyle styleID="5"  name="Strings"        fgColor="99C37B" bgColor="292C34" colorStyle="1" fontStyle="0" />
-            <WordsStyle styleID="6"  name="Keywords1"      fgColor="B67DCC" bgColor="292C34" colorStyle="1" fontStyle="2" keywordClass="instre1" />
-            <WordsStyle styleID="7"  name="Keywords2"      fgColor="FFE064" bgColor="292C34" colorStyle="1" fontStyle="0" keywordClass="instre2" />
-            <WordsStyle styleID="8"  name="Keywords3"      fgColor="FFFFB2" bgColor="292C34" colorStyle="1" fontStyle="0" keywordClass="type1"   />
-            <WordsStyle styleID="9"  name="Keywords4"      fgColor="E06C75" bgColor="292C34" colorStyle="1" fontStyle="0" keywordClass="type2"   />
-            <WordsStyle styleID="10" name="Keywords5"      fgColor="BD66D8" bgColor="292C34" colorStyle="1" fontStyle="2" keywordClass="type3"   />
-            <WordsStyle styleID="11" name="Keywords6"      fgColor="56B6C2" bgColor="292C34" colorStyle="1" fontStyle="0" keywordClass="type4"   />
-            <WordsStyle styleID="12" name="Keywords7"      fgColor="BD66D8" bgColor="292C34" colorStyle="1" fontStyle="0" keywordClass="type5"   />
-            <WordsStyle styleID="13" name="Keywords8"      fgColor="E5C07B" bgColor="292C34" colorStyle="1" fontStyle="0" keywordClass="type6"   />
-            <WordsStyle styleID="14" name="Functions"      fgColor="59ACFF" bgColor="292C34" colorStyle="1" fontStyle="0" />
-            <WordsStyle styleID="15" name="DataStructures" fgColor="59ACFF" bgColor="292C34" colorStyle="1" fontStyle="0" />
-            <WordsStyle styleID="16" name="CFunctions"     fgColor="59ACFF" bgColor="292C34" colorStyle="1" fontStyle="0" />
-            <WordsStyle styleID="20" name="Warnings"       fgColor="FFFF00" bgColor="292C34" colorStyle="1" fontStyle="0" />
-            <WordsStyle styleID="21" name="Errors"         fgColor="FF0000" bgColor="292C34" colorStyle="1" fontStyle="0" />
+        <LexerType name="VLang" desc="VLang" ext="vv" excluded="no">
+            <WordsStyle styleID="0"  name="Default"             fgColor="ABB2BF" bgColor="292C34" colorStyle="0" fontStyle="0" />
+            <WordsStyle styleID="1"  name="LineComments"        fgColor="5C636F" bgColor="292C34" colorStyle="1" fontStyle="0" />
+            <WordsStyle styleID="2"  name="BlockComments"       fgColor="5C636F" bgColor="292C34" colorStyle="1" fontStyle="0" />
+            <WordsStyle styleID="3"  name="Numbers"             fgColor="D8A776" bgColor="292C34" colorStyle="1" fontStyle="0" />
+            <WordsStyle styleID="4"  name="Operators"           fgColor="56B6C2" bgColor="292C34" colorStyle="1" fontStyle="0" />
+            <WordsStyle styleID="5"  name="Strings"             fgColor="99C37B" bgColor="292C34" colorStyle="1" fontStyle="0" />
+            <WordsStyle styleID="6"  name="Keywords1"           fgColor="B67DCC" bgColor="292C34" colorStyle="1" fontStyle="0" keywordClass="instre1" />
+            <WordsStyle styleID="7"  name="Keywords2"           fgColor="FFE064" bgColor="292C34" colorStyle="1" fontStyle="0" keywordClass="instre2" />
+            <WordsStyle styleID="8"  name="Keywords3"           fgColor="FFFFB2" bgColor="292C34" colorStyle="1" fontStyle="0" keywordClass="type1"   />
+            <WordsStyle styleID="9"  name="Keywords4"           fgColor="E06C75" bgColor="292C34" colorStyle="1" fontStyle="0" keywordClass="type2"   />
+            <WordsStyle styleID="10" name="Keywords5"           fgColor="BD66D8" bgColor="292C34" colorStyle="1" fontStyle="0" keywordClass="type3"   />
+            <WordsStyle styleID="11" name="Keywords6"           fgColor="56B6C2" bgColor="292C34" colorStyle="1" fontStyle="0" keywordClass="type4"   />
+            <WordsStyle styleID="12" name="Keywords7"           fgColor="BD66D8" bgColor="292C34" colorStyle="1" fontStyle="0" keywordClass="type5"   />
+            <WordsStyle styleID="13" name="Keywords8"           fgColor="E5C07B" bgColor="292C34" colorStyle="1" fontStyle="0" keywordClass="type6"   />
+            <WordsStyle styleID="14" name="Functions"           fgColor="59ACFF" bgColor="292C34" colorStyle="1" fontStyle="0" />
+            <WordsStyle styleID="15" name="DataStructures"      fgColor="59ACFF" bgColor="292C34" colorStyle="1" fontStyle="0" />
+            <WordsStyle styleID="16" name="CFunctions"          fgColor="59ACFF" bgColor="292C34" colorStyle="1" fontStyle="0" />
+            <WordsStyle styleID="17" name="StringInterpolation" fgColor="FEA57A" bgColor="292C34" colorStyle="1" fontStyle="0" />
+            <WordsStyle styleID="20" name="Warnings"            fgColor="FFFF00" bgColor="292C34" colorStyle="1" fontStyle="0" />
+            <WordsStyle styleID="21" name="Errors"              fgColor="FF0000" bgColor="292C34" colorStyle="1" fontStyle="0" />
         </LexerType>
     </LexerStyles>
 </NotepadPlus>

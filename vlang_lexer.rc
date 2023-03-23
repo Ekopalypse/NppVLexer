@@ -1,8 +1,18 @@
 #include <windows.h>
 
+#define VER_VERSION					0,4,0,0
+#define VER_VERSION_STR				"0.4.0.0\0"
+
+#define VER_COMPANYNAME_STR			"Ekopalypse\0"
+#define VER_FILEDESCRIPTION_STR		"V language lexer plugin for Notepad++\0"
+#define VER_INTERNALNAME_STR		"VLang Lexer\0"
+#define VER_LEGALCOPYRIGHT_STR		"Copyright (C) 2022-2023 Ekopalypse\0"
+#define VER_ORIGINALFILENAME_STR	"VLang.dll\0"
+#define VER_PRODUCTNAME_STR			"VLang Lexer\0"
+
 VS_VERSION_INFO	VERSIONINFO
-FILEVERSION    	0, 3, 0, 0
-PRODUCTVERSION 	0, 3, 0, 0
+FILEVERSION    	VER_VERSION
+PRODUCTVERSION 	VER_VERSION
 FILEFLAGSMASK  	VS_FFI_FILEFLAGSMASK
 #ifdef _DEBUG
 	FILEFLAGS	VS_FF_DEBUG | VS_FF_PRERELEASE
@@ -13,22 +23,22 @@ FILEOS			VOS_NT_WINDOWS32
 FILETYPE		VFT_DLL  // VFT_APP
 FILESUBTYPE		VFT2_UNKNOWN
 BEGIN
-  BLOCK "StringFileInfo"
-  BEGIN
-    BLOCK "040904b0"  // 04b0 == 1200
-    BEGIN
-      VALUE "CompanyName", "Ekopalypse"
-      VALUE "FileDescription", "V language lexer plugin for Notepad++"
-      VALUE "FileVersion", "0.3.0.0"
-      VALUE "InternalName", "VLang"
-      VALUE "LegalCopyright", "Copyright (C) 2022 Ekopalypse"
-      VALUE "OriginalFilename", "VLang.dll"
-      VALUE "ProductName", "VLang"
-      VALUE "ProductVersion", "0.3.0.0"
-    END
-  END
-  BLOCK "VarFileInfo"
-  BEGIN
-    VALUE "Translation", 0x0409, 1200
-  END
+	BLOCK "StringFileInfo"
+	BEGIN
+		BLOCK "040904b0"  // 04b0 == 1200
+		BEGIN
+			VALUE "CompanyName",      VER_COMPANYNAME_STR
+			VALUE "FileDescription",  VER_FILEDESCRIPTION_STR
+			VALUE "FileVersion",      VER_VERSION_STR
+			VALUE "InternalName",     VER_INTERNALNAME_STR
+			VALUE "LegalCopyright",   VER_LEGALCOPYRIGHT_STR
+			VALUE "OriginalFilename", VER_ORIGINALFILENAME_STR
+			VALUE "ProductName",      VER_PRODUCTNAME_STR
+			VALUE "ProductVersion",   VER_VERSION_STR
+		END
+	END
+	BLOCK "VarFileInfo"
+	BEGIN
+		VALUE "Translation", 0x0409, 1200
+	END
 END
