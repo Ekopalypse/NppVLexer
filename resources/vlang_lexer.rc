@@ -1,12 +1,12 @@
 #include <windows.h>
 
-#define VER_VERSION					0,4,0,0
-#define VER_VERSION_STR				"0.4.0.0\0"
+#define VER_VERSION					0,4,1,0
+#define VER_VERSION_STR				"0.4.1.0\0"
 
 #define VER_COMPANYNAME_STR			"Ekopalypse\0"
 #define VER_FILEDESCRIPTION_STR		"V language lexer plugin for Notepad++\0"
 #define VER_INTERNALNAME_STR		"VLang Lexer\0"
-#define VER_LEGALCOPYRIGHT_STR		"Copyright (C) 2022-2023 Ekopalypse\0"
+#define VER_LEGALCOPYRIGHT_STR		"Copyright (C) 2022-2025 Ekopalypse\0"
 #define VER_ORIGINALFILENAME_STR	"VLang.dll\0"
 #define VER_PRODUCTNAME_STR			"VLang Lexer\0"
 

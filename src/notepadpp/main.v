@@ -2,13 +2,19 @@ module notepadpp
 
 import winapi { send_message }
 
-__global (
-	npp Npp
-)
+pub const npp = &Npp{}
 
 pub struct Npp {
-pub mut:
+mut:
 	hwnd voidptr
+pub mut:
+	plugin_config_dir string
+}
+
+pub fn create(hwnd voidptr) {
+	mut npp_ := unsafe { npp }
+	npp_.hwnd = hwnd
+	npp_.plugin_config_dir = npp_.get_plugin_config_dir()
 }
 
 @[inline]

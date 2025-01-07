@@ -6,14 +6,11 @@ import scintilla as sci
 
 fn C.OutputDebugStringA(output_string &u8)
 
-__global (
-	lexer             Lexer
-	key_words         Keywords
-	show_debug_margin bool
-)
+__global lexer Lexer
 
-const language_name = 'VLang'
-const language_desc = 'V Programming Language'
+pub const lexer_name = 'VLang'
+const key_words = &Keywords{}
+const lexer_desc = 'V Programming Language'
 const vtable = ILexerVtable{}
 const ilexer = ILexer{&vtable}
 const fold_level_footer_flag = 0x4000
@@ -24,35 +21,35 @@ struct ILexer {
 
 struct ILexerVtable {
 	// ILexer 4
-	fn_version                      fn (self &ILexer) int   = version
-	fn_release                      fn (self &ILexer)       = release
-	fn_property_names               fn (self &ILexer) &char = property_names
-	fn_property_type                fn (self &ILexer, name &char) int   = property_type
-	fn_describe_property            fn (self &ILexer, name &char) &char = describe_property
-	fn_property_set                 fn (self &ILexer, key &char, val &char) isize = property_set
-	fn_describe_word_list_sets      fn (self &ILexer) &char = describe_word_list_sets
-	fn_word_list_set                fn (self &ILexer, kw_list_index int, key_words &char) isize = word_list_set
-	fn_lex                          fn (self &ILexer, start_pos usize, length_doc isize, init_style int, p_access &IDocument) = lex
-	fn_fold                         fn (self &ILexer, start_pos usize, length_doc isize, init_style int, p_access &IDocument) = fold
-	fn_private_call                 fn (self &ILexer, operation int, pointer voidptr) voidptr = private_call
-	fn_line_end_types_supported     fn (self &ILexer) int = line_end_types_supported
-	fn_allocate_sub_styles          fn (self &ILexer, style_base int, number_styles int) int = allocate_sub_styles
-	fn_sub_styles_start             fn (self &ILexer, style_base int) int = sub_styles_start
-	fn_sub_styles_length            fn (self &ILexer, style_base int) int = sub_styles_length
-	fn_style_from_sub_style         fn (self &ILexer, sub_style int) int  = style_from_sub_style
-	fn_primary_style_from_style     fn (self &ILexer, style int) int      = primary_style_from_style
-	fn_free_sub_styles              fn (self &ILexer) = free_sub_styles
-	fn_set_identifiers              fn (self &ILexer, style int, identifiers &char) = set_identifiers
-	fn_distance_to_secondary_styles fn (self &ILexer) int   = distance_to_secondary_styles
-	fn_get_sub_style_bases          fn (self &ILexer) &char = get_sub_style_bases
-	fn_named_styles                 fn (self &ILexer) int   = named_styles
-	fn_name_of_style                fn (self &ILexer, style int) &char = name_of_style
-	fn_tags_of_style                fn (self &ILexer, style int) &char = tags_of_style
-	fn_description_of_style         fn (self &ILexer, style int) &char = description_of_style
+	vtbl_version                      fn (self &ILexer) int                                                                     = version
+	vtbl_release                      fn (self &ILexer)                                                                         = release
+	vtbl_property_names               fn (self &ILexer) &char                                                                   = property_names
+	vtbl_property_type                fn (self &ILexer, name &char) int                                                         = property_type
+	vtbl_describe_property            fn (self &ILexer, name &char) &char                                                       = describe_property
+	vtbl_property_set                 fn (self &ILexer, key &char, val &char) isize                                             = property_set
+	vtbl_describe_word_list_sets      fn (self &ILexer) &char                                                                   = describe_word_list_sets
+	vtbl_word_list_set                fn (self &ILexer, kw_list_index int, key_words &char) isize                               = word_list_set
+	vtbl_lex                          fn (self &ILexer, start_pos usize, length_doc isize, init_style int, p_access &IDocument) = lex
+	vtbl_fold                         fn (self &ILexer, start_pos usize, length_doc isize, init_style int, p_access &IDocument) = fold
+	vtbl_private_call                 fn (self &ILexer, operation int, pointer voidptr) voidptr                                 = private_call
+	vtbl_line_end_types_supported     fn (self &ILexer) int                                                                     = line_end_types_supported
+	vtbl_allocate_sub_styles          fn (self &ILexer, style_base int, number_styles int) int                                  = allocate_sub_styles
+	vtbl_sub_styles_start             fn (self &ILexer, style_base int) int                                                     = sub_styles_start
+	vtbl_sub_styles_length            fn (self &ILexer, style_base int) int                                                     = sub_styles_length
+	vtbl_style_from_sub_style         fn (self &ILexer, sub_style int) int                                                      = style_from_sub_style
+	vtbl_primary_style_from_style     fn (self &ILexer, style int) int                                                          = primary_style_from_style
+	vtbl_free_sub_styles              fn (self &ILexer)                                                                         = free_sub_styles
+	vtbl_set_identifiers              fn (self &ILexer, style int, identifiers &char)                                           = set_identifiers
+	vtbl_distance_to_secondary_styles fn (self &ILexer) int                                                                     = distance_to_secondary_styles
+	vtbl_get_sub_style_bases          fn (self &ILexer) &char                                                                   = get_sub_style_bases
+	vtbl_named_styles                 fn (self &ILexer) int                                                                     = named_styles
+	vtbl_name_of_style                fn (self &ILexer, style int) &char                                                        = name_of_style
+	vtbl_tags_of_style                fn (self &ILexer, style int) &char                                                        = tags_of_style
+	vtbl_description_of_style         fn (self &ILexer, style int) &char                                                        = description_of_style
 	// ILexer 5
-	fn_get_name       fn (self &ILexer) &char = get_name
-	fn_get_identifier fn (self &ILexer) int   = get_identifier
-	fn_get_property   fn (self &ILexer, key &char) &char = get_property
+	vtbl_get_name       fn (self &ILexer) &char                                                                                 = get_name
+	vtbl_get_identifier fn (self &ILexer) int                                                                                   = get_identifier
+	vtbl_get_property   fn (self &ILexer, key &char) &char                                                                      = get_property
 }
 
 // IDocument interface
@@ -61,30 +58,30 @@ struct IDocument {
 }
 
 struct IDocumentVtable {
-	version                          fn (self &IDocument) int = unsafe { nil }
-	set_error_status                 fn (self &IDocument, status int) = unsafe { nil }
-	length                           fn (self &IDocument) isize       = unsafe { nil }
-	get_char_range                   fn (self &IDocument, buffer &char, position isize, length_retrieve isize) = unsafe { nil }
-	style_at                         fn (self &IDocument, position isize) char       = unsafe { nil }
-	line_from_position               fn (self &IDocument, position isize) isize      = unsafe { nil }
-	line_start                       fn (self &IDocument, line isize) isize          = unsafe { nil }
-	get_level                        fn (self &IDocument, line isize) int            = unsafe { nil }
-	set_level                        fn (self &IDocument, line isize, level int) int = unsafe { nil }
-	get_line_state                   fn (self &IDocument, line isize) int = unsafe { nil }
-	set_line_state                   fn (self &IDocument, line isize, state int) int = unsafe { nil }
-	start_styling                    fn (self &IDocument, position isize) = unsafe { nil }
-	set_style_for                    fn (self &IDocument, length isize, style char) bool   = unsafe { nil }
-	set_styles                       fn (self &IDocument, length isize, styles &char) bool = unsafe { nil }
-	decoration_set_current_indicator fn (self &IDocument, indicator int) = unsafe { nil }
-	decoration_fill_range            fn (self &IDocument, position isize, value int, fill_length isize) = unsafe { nil }
-	change_lexer_state               fn (self &IDocument, start isize, end isize) = unsafe { nil }
-	code_page                        fn (self &IDocument) int = unsafe { nil }
-	is_dbcs_lead_byte                fn (self &IDocument, ch char) bool = unsafe { nil }
-	buffer_pointer                   fn (self &IDocument) &char = unsafe { nil }
-	get_line_indentation             fn (self &IDocument, line isize) int   = unsafe { nil }
-	line_end                         fn (self &IDocument, line isize) isize = unsafe { nil }
-	get_relative_position            fn (self &IDocument, position_start isize, character_offset isize) isize = unsafe { nil }
-	get_character_and_width          fn (self &IDocument, position isize, p_width &isize) int = unsafe { nil }
+	version                          fn (self &IDocument) int                                                  = voidptr(0)
+	set_error_status                 fn (self &IDocument, status int)                                          = voidptr(0)
+	length                           fn (self &IDocument) isize                                                = voidptr(0)
+	get_char_range                   fn (self &IDocument, buffer &char, position isize, length_retrieve isize) = voidptr(0)
+	style_at                         fn (self &IDocument, position isize) char                                 = voidptr(0)
+	line_from_position               fn (self &IDocument, position isize) isize                                = voidptr(0)
+	line_start                       fn (self &IDocument, line isize) isize                                    = voidptr(0)
+	get_level                        fn (self &IDocument, line isize) int                                      = voidptr(0)
+	set_level                        fn (self &IDocument, line isize, level int) int                           = voidptr(0)
+	get_line_state                   fn (self &IDocument, line isize) int                                      = voidptr(0)
+	set_line_state                   fn (self &IDocument, line isize, state int) int                           = voidptr(0)
+	start_styling                    fn (self &IDocument, position isize)                                      = voidptr(0)
+	set_style_for                    fn (self &IDocument, length isize, style char) bool                       = voidptr(0)
+	set_styles                       fn (self &IDocument, length isize, styles &char) bool                     = voidptr(0)
+	decoration_set_current_indicator fn (self &IDocument, indicator int)                                       = voidptr(0)
+	decoration_fill_range            fn (self &IDocument, position isize, value int, fill_length isize)        = voidptr(0)
+	change_lexer_state               fn (self &IDocument, start isize, end isize)                              = voidptr(0)
+	code_page                        fn (self &IDocument) int                                                  = voidptr(0)
+	is_dbcs_lead_byte                fn (self &IDocument, ch char) bool                                        = voidptr(0)
+	buffer_pointer                   fn (self &IDocument) &char                                                = voidptr(0)
+	get_line_indentation             fn (self &IDocument, line isize) int                                      = voidptr(0)
+	line_end                         fn (self &IDocument, line isize) isize                                    = voidptr(0)
+	get_relative_position            fn (self &IDocument, position_start isize, character_offset isize) isize  = voidptr(0)
+	get_character_and_width          fn (self &IDocument, position isize, p_width &isize) int                  = voidptr(0)
 }
 
 enum LexState {
@@ -122,6 +119,8 @@ mut:
 }
 
 pub struct Lexer {
+pub mut:
+	show_debug_margin    bool
 mut:
 	buffer               string
 	length               usize
@@ -140,8 +139,7 @@ mut:
 }
 
 fn (mut l Lexer) init(pos usize, length isize, buffer_ptr &char, doc_length isize) {
-	l.buffer = unsafe { buffer_ptr.vstring_literal_with_len(int(doc_length))[int(pos)..int(pos) +
-		int(length)] }
+	l.buffer = unsafe { buffer_ptr.vstring_literal_with_len(int(doc_length))[int(pos)..int(pos) + int(length)] }
 	l.length = usize(length)
 	l.position = pos
 	l.end_pos = pos + l.length
@@ -188,7 +186,7 @@ fn get_lexer_count() int {
 @[export: GetLexerName]
 @[callconv: stdcall]
 fn get_lexer_name(index u32, name &char, buf_length int) {
-	mut src := vlexer.language_name
+	mut src := lexer_name
 	if src.len >= buf_length {
 		src = src[..buf_length - 1]
 	}
@@ -199,7 +197,7 @@ fn get_lexer_name(index u32, name &char, buf_length int) {
 @[export: GetLexerStatusText]
 @[callconv: stdcall]
 fn get_lexer_status_text(index u32, desc &char, buf_length int) {
-	mut src := vlexer.language_desc
+	mut src := lexer_desc
 	if src.len > buf_length {
 		src = src[..buf_length]
 	}
@@ -210,7 +208,7 @@ fn get_lexer_status_text(index u32, desc &char, buf_length int) {
 @[export: CreateLexer]
 @[callconv: stdcall]
 fn create_lexer(name charptr) &ILexer {
-	return &vlexer.ilexer
+	return &ilexer
 }
 
 @[export: GetNameSpace]
@@ -243,7 +241,7 @@ fn get_lexer_factory(index int) fn () voidptr {
 
 @[callconv: stdcall]
 fn ilexer_implementation() voidptr {
-	return voidptr(&vlexer.ilexer)
+	return voidptr(&ilexer)
 }
 
 // scintilla with ILexer4 end
@@ -293,15 +291,16 @@ fn describe_word_list_sets(self &ILexer) &char {
 @[callconv: stdcall]
 fn word_list_set(self &ILexer, kw_list_index int, key_word_list &char) isize {
 	updated_keywords := unsafe { cstring_to_vstring(key_word_list).split(' ') }
+	mut key_words_ := unsafe {key_words}
 	match kw_list_index {
-		0 { key_words.kw1 = updated_keywords }
-		1 { key_words.kw2 = updated_keywords }
-		2 { key_words.kw3 = updated_keywords }
-		3 { key_words.kw4 = updated_keywords }
-		4 { key_words.kw5 = updated_keywords }
-		5 { key_words.kw6 = updated_keywords }
-		6 { key_words.kw7 = updated_keywords }
-		7 { key_words.kw8 = updated_keywords }
+		0 { key_words_.kw1 = updated_keywords }
+		1 { key_words_.kw2 = updated_keywords }
+		2 { key_words_.kw3 = updated_keywords }
+		3 { key_words_.kw4 = updated_keywords }
+		4 { key_words_.kw5 = updated_keywords }
+		5 { key_words_.kw6 = updated_keywords }
+		6 { key_words_.kw7 = updated_keywords }
+		7 { key_words_.kw8 = updated_keywords }
 		else {}
 	}
 	return kw_list_index
@@ -561,7 +560,7 @@ fn fold(self &ILexer, start_pos usize, length_doc isize, init_style int, p_acces
 			}
 			(current_char == '\n' || i == end_pos - 1) {
 				idoc.vtable.set_level(p_access, cur_line, cur_level)
-				editor.set_debug_margin_text(usize(cur_line), cur_level & sci.sc_foldlevelnumbermask)
+				sci.editor.set_debug_margin_text(usize(cur_line), cur_level & sci.sc_foldlevelnumbermask)
 				if current_char == '\n' {
 					cur_line++
 				}
@@ -695,7 +694,7 @@ fn description_of_style(self &ILexer, style int) &char {
 // ILexer 5 functions
 @[callconv: stdcall]
 fn get_name(self &ILexer) &char {
-	return unsafe { &char(vlexer.language_name.str) }
+	return unsafe { &char(lexer_name.str) }
 }
 
 @[callconv: stdcall]

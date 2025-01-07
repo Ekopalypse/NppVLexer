@@ -2,9 +2,7 @@ module scintilla
 
 import winapi { send_message }
 
-__global (
-	editor Editor
-)
+pub const editor = &Editor{}
 
 struct SciNotifyHeader {
 pub mut:
@@ -73,28 +71,38 @@ pub type SCI_FN_DIRECT = fn (hwnd isize, msg int, param usize, lparam isize) isi
 
 pub struct Editor {
 pub mut:
-	main_func    SCI_FN_DIRECT = unsafe { nil }
+	main_func    SCI_FN_DIRECT = voidptr(0)
 	main_hwnd    voidptr
-	second_func  SCI_FN_DIRECT = unsafe { nil }
+	second_func  SCI_FN_DIRECT = voidptr(0)
 	second_hwnd  voidptr
-	current_func SCI_FN_DIRECT = unsafe { nil }
+	current_func SCI_FN_DIRECT = voidptr(0)
 	current_hwnd voidptr
+}
+
+pub fn create_editors(main_handle voidptr, second_handle voidptr) {
+	mut editor_ := unsafe { editor }
+	editor_.main_func = SCI_FN_DIRECT(send_message(main_handle, 2184, 0, 0))
+	editor_.main_hwnd = voidptr(send_message(main_handle, 2185, 0, 0))
+	editor_.second_func = SCI_FN_DIRECT(send_message(second_handle, 2184, 0, 0))
+	editor_.second_hwnd = voidptr(send_message(second_handle, 2185, 0, 0))
+	editor_.current_func = editor.main_func
+	editor_.current_hwnd = editor.main_hwnd
+}
+
+pub fn set_current_editor(current_view isize) {
+	mut editor_ := unsafe { editor }
+	if current_view == 0 {
+		editor_.current_func = editor.main_func
+		editor_.current_hwnd = editor.main_hwnd
+	} else {
+		editor_.current_func = editor.second_func
+		editor_.current_hwnd = editor.second_hwnd
+	}
 }
 
 @[inline]
 fn (e Editor) call(msg int, wparam usize, lparam isize) isize {
 	return e.current_func(e.current_hwnd, msg, wparam, lparam)
-}
-
-pub fn create_editors(main_handle voidptr, second_handle voidptr) Editor {
-	mut editor := Editor{}
-	editor.main_func = SCI_FN_DIRECT(send_message(main_handle, 2184, 0, 0))
-	editor.main_hwnd = voidptr(send_message(main_handle, 2185, 0, 0))
-	editor.second_func = SCI_FN_DIRECT(send_message(second_handle, 2184, 0, 0))
-	editor.second_hwnd = voidptr(send_message(second_handle, 2185, 0, 0))
-	editor.current_func = editor.main_func
-	editor.current_hwnd = editor.main_hwnd
-	return editor
 }
 
 pub fn (e Editor) line_from_position(position usize) isize {
