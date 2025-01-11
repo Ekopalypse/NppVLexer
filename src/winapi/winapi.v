@@ -9,3 +9,8 @@ fn C.SendMessageW(hwnd voidptr, msg u32, wparam usize, lparam isize) isize
 pub fn send_message(hwnd voidptr, msg u32, wparam usize, lparam isize) isize {
 	return C.SendMessageW(hwnd, msg, wparam, lparam)
 }
+
+fn C.OutputDebugStringA(output_string &u8)
+pub fn output_debug_string(output string) {
+	C.OutputDebugStringA(output.str)
+}

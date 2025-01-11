@@ -1,7 +1,7 @@
 #include <windows.h>
 
-#define VER_VERSION					0,4,1,0
-#define VER_VERSION_STR				"0.4.1.0\0"
+#define VER_VERSION					0,5,0,0
+#define VER_VERSION_STR				"0.5.0.0\0"
 
 #define VER_COMPANYNAME_STR			"Ekopalypse\0"
 #define VER_FILEDESCRIPTION_STR		"V language lexer plugin for Notepad++\0"

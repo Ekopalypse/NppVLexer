@@ -1,13 +1,13 @@
 module notepadpp
 
 import winapi { send_message }
+import plugin_data
 
 pub const npp = &Npp{}
 
 pub struct Npp {
-mut:
-	hwnd voidptr
 pub mut:
+	hwnd voidptr
 	plugin_config_dir string
 }
 
@@ -32,4 +32,8 @@ pub fn (n Npp) get_plugin_config_dir() string {
 
 	n.call(nppm_getpluginsconfigdir, usize(buffer_size), isize(buffer))
 	return unsafe { string_from_wide(buffer) }
+}
+
+pub fn (n Npp) set_external_lexer_auto_indent_mode() {
+	n.call(nppm_setexternallexerautoindentmode, usize(plugin_data.lexer_name_wide), 1)
 }

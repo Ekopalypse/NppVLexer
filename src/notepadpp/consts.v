@@ -105,6 +105,12 @@ pub const nppm_getcurrentview = nppmsg + 88
 // nppm_removeshortcutbycmdid = nppmsg + 96
 // nppm_getpluginhomepath = nppmsg + 97
 // nppm_getsettingsoncloudpath = nppmsg + 98
+// nppmsg + 99
+// nppmsg + 100
+// nppmsg + 101
+// nppmsg + 102
+// nppmsg + 103
+pub const nppm_setexternallexerautoindentmode = nppmsg + 104
 // var_not_recognized = 0
 // full_current_path = 1
 // current_directory = 2
@@ -142,20 +148,23 @@ pub const nppn_ready = nppn_first + 1
 // nppn_filesaved = nppn_first + 8
 // nppn_shutdown = nppn_first + 9
 pub const nppn_bufferactivated = nppn_first + 10 // nppn_langchanged = nppn_first + 11
-// nppn_wordstylesupdated = nppn_first + 12
-// nppn_shortcutremapped = nppn_first + 13
-// nppn_filebeforeload = nppn_first + 14
-// nppn_fileloadfailed = nppn_first + 15
-// nppn_readonlychanged = nppn_first + 16
+// pub const nppn_wordstylesupdated = nppn_first + 12
+// pub const nppn_shortcutremapped = nppn_first + 13
+// pub const nppn_filebeforeload = nppn_first + 14
+// pub const nppn_fileloadfailed = nppn_first + 15
+// pub const nppn_readonlychanged = nppn_first + 16
 // docstatus_readonly = 1
 // docstatus_bufferdirty = 2
-// nppn_docorderchanged = nppn_first + 17
-// nppn_snapshotdirtyfileloaded = nppn_first + 18
-// nppn_beforeshutdown = nppn_first + 19
-// nppn_cancelshutdown = nppn_first + 20
-// nppn_filebeforerename = nppn_first + 21
-// nppn_filerenamecancel = nppn_first + 22
-// nppn_filerenamed = nppn_first + 23
-// nppn_filebeforedelete = nppn_first + 24
-// nppn_filedeletefailed = nppn_first + 25
-// nppn_filedeleted = nppn_first + 26
+// pub const nppn_docorderchanged = nppn_first + 17
+// pub const nppn_snapshotdirtyfileloaded = nppn_first + 18
+// pub const nppn_beforeshutdown = nppn_first + 19
+// pub const nppn_cancelshutdown = nppn_first + 20
+// pub const nppn_filebeforerename = nppn_first + 21
+// pub const nppn_filerenamecancel = nppn_first + 22
+// pub const nppn_filerenamed = nppn_first + 23
+// pub const nppn_filebeforedelete = nppn_first + 24
+// pub const nppn_filedeletefailed = nppn_first + 25
+// pub const nppn_filedeleted = nppn_first + 26
+// pub const nppn_darkmodechanged = nppn_first + 27
+// pub const nppn_cmdlinepluginmsg = nppn_first + 28
+pub const nppn_externallexerbuffer = nppn_first + 29

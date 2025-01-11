@@ -1,16 +1,15 @@
 module vlexer
 
 import scintilla as sci
+import plugin_data
+import winapi as api
 
 #flag -lKernel32
 
-fn C.OutputDebugStringA(output_string &u8)
 
 __global lexer Lexer
 
-pub const lexer_name = 'VLang'
-const key_words = &Keywords{}
-const lexer_desc = 'V Programming Language'
+const key_words = &Keywords{}  // __global
 const vtable = ILexerVtable{}
 const ilexer = ILexer{&vtable}
 const fold_level_footer_flag = 0x4000
@@ -186,7 +185,7 @@ fn get_lexer_count() int {
 @[export: GetLexerName]
 @[callconv: stdcall]
 fn get_lexer_name(index u32, name &char, buf_length int) {
-	mut src := lexer_name
+	mut src := plugin_data.lexer_name
 	if src.len >= buf_length {
 		src = src[..buf_length - 1]
 	}
@@ -197,7 +196,7 @@ fn get_lexer_name(index u32, name &char, buf_length int) {
 @[export: GetLexerStatusText]
 @[callconv: stdcall]
 fn get_lexer_status_text(index u32, desc &char, buf_length int) {
-	mut src := lexer_desc
+	mut src := plugin_data.lexer_desc
 	if src.len > buf_length {
 		src = src[..buf_length]
 	}
@@ -214,7 +213,7 @@ fn create_lexer(name charptr) &ILexer {
 @[export: GetNameSpace]
 @[callconv: stdcall]
 fn get_namespace() charptr {
-	return 'vlang.VLang'.str
+	return c'vlang.VLang'
 }
 
 // void SetLibraryProperty(const char *key, const char *value)
@@ -227,7 +226,7 @@ fn set_library_property(key charptr, value charptr) {
 @[export: GetLibraryPropertyNames]
 @[callconv: stdcall]
 fn get_library_property_names() charptr {
-	return ''.str
+	return c''
 }
 
 // scintilla with ILexer5 end
@@ -260,7 +259,7 @@ fn release(self &ILexer) {
 // virtual const char * SCI_METHOD PropertyNames() = 0
 @[callconv: stdcall]
 fn property_names(self &ILexer) &char {
-	return &char(''.str)
+	return c''
 }
 
 // virtual int SCI_METHOD PropertyType(const char *name) = 0
@@ -284,7 +283,7 @@ fn property_set(self &ILexer, key &char, val &char) isize {
 // virtual const char * SCI_METHOD DescribeWordListSets() = 0
 @[callconv: stdcall]
 fn describe_word_list_sets(self &ILexer) &char {
-	return unsafe { &char('kw1\nkw2\nkw3\nkw4\nkw5\nkw6\nkw7\nkw8'.str) }
+	return c'kw1\nkw2\nkw3\nkw4\nkw5\nkw6\nkw7\nkw8'
 }
 
 // virtual i64 SCI_METHOD WordListSet(int n, const char *wl) = 0
@@ -315,7 +314,7 @@ fn lex(self &ILexer, start_pos usize, length_doc isize, init_style int, p_access
 	if buffer_ptr == 0 {
 		return
 	}
-	C.OutputDebugStringA('start_pos:${start_pos} length_doc:${length_doc} init_style: ${init_style} state: ${lexer.state} next_state: ${lexer.next_state}'.str)
+	api.output_debug_string('start_pos:${start_pos} length_doc:${length_doc} init_style: ${init_style} state: ${lexer.state} next_state: ${lexer.next_state}')
 	lexer.init(start_pos, length_doc, buffer_ptr, real_doc_length)
 	match init_style {
 		// not needed to check LexState.comment_line as scintilla starts lexing from start of line always
@@ -343,22 +342,15 @@ fn lex(self &ILexer, start_pos usize, length_doc isize, init_style int, p_access
 			}
 		}
 		5 {
-			/*
-				 ISSUE !!
-				 if there is an interpolation within the string the char
-				 following the } is identified as the string identifier
-			*/
-
+			lexer.state = LexState.strings
 			// go back and find out which char started the string
 			for i := start_pos - 1; i >= 0; i-- {
 				style := idoc.vtable.style_at(p_access, isize(i))
 				if style != char(LexState.strings) && style != char(LexState.string_interpolation) {
-					idoc.vtable.get_char_range(p_access, &lexer.string_starts_with, isize(i + 1),
-						1)
+					idoc.vtable.get_char_range(p_access, &lexer.string_starts_with, isize(i + 1), 1)
 					break
 				}
 			}
-			lexer.state = LexState.strings
 		}
 		else {
 			lexer.state = LexState.default
@@ -371,7 +363,7 @@ fn lex(self &ILexer, start_pos usize, length_doc isize, init_style int, p_access
 	if lexer.next_state != LexState.notset {
 		lexer.state = lexer.next_state
 	}
-	C.OutputDebugStringA('lexer_state: ${lexer.state}'.str)
+	api.output_debug_string('lexer_state: ${lexer.state}')
 	for i := 0; i < length_doc; i++ {
 		ch := lexer.buffer[i]
 
@@ -429,7 +421,7 @@ fn lex(self &ILexer, start_pos usize, length_doc isize, init_style int, p_access
 				} else if ch == `"` || ch == `'` || ch == `\`` {
 					lexer.state = LexState.strings
 					lexer.string_starts_with = ch
-				} else if ch in [`*`, `/`, `%`, `<`, `>`, `&`, `+`, `-`, `|`, `^`, `!`, `=`, `:`,
+				} else if ch in [`@`, `*`, `/`, `%`, `<`, `>`, `&`, `+`, `-`, `|`, `^`, `!`, `=`, `:`,
 					`(`, `)`, `{`, `}`, `[`, `]`] {
 					lexer.state = LexState.operator
 					lexer.next_state = LexState.default
@@ -470,7 +462,7 @@ fn lex(self &ILexer, start_pos usize, length_doc isize, init_style int, p_access
 				// check if string interpolation starts
 				if ch == `$` && lexer.next_char == `{` {
 					lexer.state = LexState.string_interpolation
-					C.OutputDebugStringA('string_interpolation set'.str)
+					api.output_debug_string('string_interpolation set')
 				}
 				// like '\'' and '\\' and r'\'
 				else if (ch == lexer.string_starts_with && lexer.previous_char == `\\`
@@ -484,7 +476,7 @@ fn lex(self &ILexer, start_pos usize, length_doc isize, init_style int, p_access
 			}
 			.string_interpolation {
 				if ch == `}` {
-					C.OutputDebugStringA('string_interpolation reset'.str)
+					api.output_debug_string('string_interpolation reset')
 					lexer.next_state = LexState.strings
 				}
 			}
@@ -646,7 +638,7 @@ fn distance_to_secondary_styles(self &ILexer) int {
 @[callconv: stdcall]
 fn get_sub_style_bases(self &ILexer) &char {
 	// used for sub styles - not needed/supported by this lexer
-	return &char(''.str)
+	return &char(c'')
 }
 
 // virtual int SCI_METHOD NamedStyles() = 0;
@@ -659,22 +651,22 @@ fn named_styles(self &ILexer) int {
 @[callconv: stdcall]
 fn name_of_style(self &ILexer, style int) &char {
 	style_name := match style {
-		0 { 'Default'.str }
-		1 { 'Line Comments'.str }
-		2 { 'Block Comments'.str }
-		3 { 'Numbers'.str }
-		4 { 'Operators'.str }
-		5 { 'Strings'.str }
-		6 { 'Keyword List 1'.str }
-		7 { 'Keyword List 2'.str }
-		8 { 'Keyword List 3'.str }
-		9 { 'Keyword List 4'.str }
-		10 { 'Keyword List 5'.str }
-		11 { 'Keyword List 6'.str }
-		12 { 'Keyword List 7'.str }
-		13 { 'Keyword List 8'.str }
-		14 { 'C Functions'.str }
-		else { ''.str }
+		0 { c'Default' }
+		1 { c'Line Comments' }
+		2 { c'Block Comments' }
+		3 { c'Numbers' }
+		4 { c'Operators' }
+		5 { c'Strings' }
+		6 { c'Keyword List 1' }
+		7 { c'Keyword List 2' }
+		8 { c'Keyword List 3' }
+		9 { c'Keyword List 4' }
+		10 { c'Keyword List 5' }
+		11 { c'Keyword List 6' }
+		12 { c'Keyword List 7' }
+		13 { c'Keyword List 8' }
+		14 { c'C Functions' }
+		else { c'' }
 	}
 	return &char(style_name)
 }
@@ -694,15 +686,15 @@ fn description_of_style(self &ILexer, style int) &char {
 // ILexer 5 functions
 @[callconv: stdcall]
 fn get_name(self &ILexer) &char {
-	return unsafe { &char(lexer_name.str) }
+	return plugin_data.lexer_name.str
 }
 
 @[callconv: stdcall]
 fn get_identifier(self &ILexer) int {
-	return 1
+	return 0
 }
 
 @[callconv: stdcall]
 fn get_property(self &ILexer, key &char) &char {
-	return unsafe { ''.str }
+	return c''
 }

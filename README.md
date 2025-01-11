@@ -25,6 +25,10 @@ v.exe -cc gcc -d static_boehm -gc boehm -enable-globals -shared -d no_backtrace 
 
 
 ## Release History
+* 0.5
+	* updated to V  0.4.9 2aa5651
+    * use Npps builtin smart indent mode for external lexers
+    * reorganize code
 * 0.4
 	* updated to V 0.3.3 9a9cfe4
 	* string interpolation coloring added
