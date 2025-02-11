@@ -1,0 +1,20 @@
+LIBRARY "Vlang.dll"
+
+EXPORTS
+CreateLexer
+CreateLexerFactory
+DllMain
+GetLexerCount
+GetLexerName
+GetLexerStatusText
+GetLibraryPropertyNames
+GetNameSpace
+SetLibraryProperty
+_vcleanup_caller
+_vinit_caller
+beNotified
+getFuncsArray
+getName
+isUnicode
+messageProc
+setInfo

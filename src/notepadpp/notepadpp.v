@@ -37,3 +37,11 @@ pub fn (n Npp) get_plugin_config_dir() string {
 pub fn (n Npp) set_external_lexer_auto_indent_mode() {
 	n.call(nppm_setexternallexerautoindentmode, usize(plugin_data.lexer_name_wide), 1)
 }
+
+pub fn (n Npp) is_darkmode_enabled() bool {
+	return 0 != n.call(nppm_isdarkmodeenabled, 0, 0)
+}
+
+pub fn (n Npp) get_notepad_version() usize {
+	return usize(n.call(nppm_getnppversion, 1, 0))
+}

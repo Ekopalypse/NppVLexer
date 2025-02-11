@@ -18,6 +18,7 @@ struct ILexer {
 	vtable &ILexerVtable
 }
 
+@[callconv: stdcall]
 struct ILexerVtable {
 	// ILexer 4
 	vtbl_version                      fn (self &ILexer) int                                                                     = version
@@ -46,9 +47,9 @@ struct ILexerVtable {
 	vtbl_tags_of_style                fn (self &ILexer, style int) &char                                                        = tags_of_style
 	vtbl_description_of_style         fn (self &ILexer, style int) &char                                                        = description_of_style
 	// ILexer 5
-	vtbl_get_name       fn (self &ILexer) &char                                                                                 = get_name
-	vtbl_get_identifier fn (self &ILexer) int                                                                                   = get_identifier
-	vtbl_get_property   fn (self &ILexer, key &char) &char                                                                      = get_property
+	vtbl_get_name       			  fn (self &ILexer) &char                                                                   = get_name
+	vtbl_get_identifier 			  fn (self &ILexer) int                                                                     = get_identifier
+	vtbl_get_property   			  fn (self &ILexer, key &char) &char                                                        = get_property
 }
 
 // IDocument interface
@@ -56,6 +57,7 @@ struct IDocument {
 	vtable &IDocumentVtable
 }
 
+@[callconv: stdcall]
 struct IDocumentVtable {
 	version                          fn (self &IDocument) int                                                  = voidptr(0)
 	set_error_status                 fn (self &IDocument, status int)                                          = voidptr(0)

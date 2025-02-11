@@ -28,7 +28,11 @@ fn set_info(nppData plugin_data.NppData) {
 
 	lang_xml_path := os.join_path(notepadpp.npp.plugin_config_dir, plugin_data.lexer_name + '.xml')
 	if !os.exists(lang_xml_path) {
-		os.write_file(lang_xml_path, plugin_data.dark_xml) or {
+		mut is_dark_mode_enabled := false
+		if notepadpp.npp.get_notepad_version() >= 0x8019a {
+			is_dark_mode_enabled = notepadpp.npp.is_darkmode_enabled()
+		}
+		os.write_file(lang_xml_path, if is_dark_mode_enabled { plugin_data.dark_xml } else {plugin_data.light_xml}) or {
 			msg := 'Unable to create VLang xml file\n${lang_xml_path}'
 			message_box(notepadpp.npp.hwnd, msg, 'Error', u32(C.MB_OK | C.MB_ICONERROR))
 		}

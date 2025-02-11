@@ -61,7 +61,7 @@ pub const nppm_getpluginsconfigdir = nppmsg + 46
 // nppm_msgtoplugin = nppmsg + 47
 // nppm_menucommand = nppmsg + 48
 // nppm_triggertabbarcontextmenu = nppmsg + 49
-// nppm_getnppversion = nppmsg + 50
+pub const nppm_getnppversion = nppmsg + 50
 // nppm_hidetabbar = nppmsg + 51
 // nppm_istabbarhidden = nppmsg + 52
 // nppm_getposfrombufferid = nppmsg + 57
@@ -111,6 +111,9 @@ pub const nppm_getcurrentview = nppmsg + 88
 // nppmsg + 102
 // nppmsg + 103
 pub const nppm_setexternallexerautoindentmode = nppmsg + 104
+// nppmsg + 105
+// nppmsg + 106
+pub const nppm_isdarkmodeenabled = nppmsg + 107
 // var_not_recognized = 0
 // full_current_path = 1
 // current_directory = 2

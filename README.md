@@ -1,5 +1,5 @@
 # NppVLexer
-A V lexer plugin for Notepad++ (ONLY 64bit version available)
+A V lexer plugin for Notepad++
 
 ## Installation
 
@@ -25,6 +25,8 @@ v.exe -cc gcc -d static_boehm -gc boehm -enable-globals -shared -d no_backtrace 
 
 
 ## Release History
+* 0.6
+    * first x86 version
 * 0.5
 	* updated to V  0.4.9 2aa5651
     * use Npps builtin smart indent mode for external lexers
